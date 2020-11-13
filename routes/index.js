@@ -5,7 +5,7 @@ var dbConn  = require('../lib/db');
 // display books page
 router.get('/', function(req, res, next) {
 
-  dbConn.query('SELECT * FROM books ORDER BY id desc',function(err,rows)     {
+  dbConn.all('SELECT * FROM books ORDER BY id desc',function(err,rows)     {
 
     if(err) {
       req.flash('error', err);
@@ -55,7 +55,7 @@ router.post('/add', function(req, res, next) {
     }
 
     // insert query
-    dbConn.query('INSERT INTO books SET ?', form_data, function(err, result) {
+    dbConn.all('INSERT INTO books values (?, ?)', form_data, function(err, result) {
       //if(err) throw err
       if (err) {
         req.flash('error', err)
@@ -78,7 +78,7 @@ router.get('/edit/(:id)', function(req, res, next) {
 
   let id = req.params.id;
 
-  dbConn.query('SELECT * FROM books WHERE id = ' + id, function(err, rows, fields) {
+  dbConn.all('SELECT * FROM books WHERE id = ' + id, function(err, rows, fields) {
     if(err) throw err
 
     // if user not found
@@ -128,7 +128,7 @@ router.post('/update/:id', function(req, res, next) {
       author: author
     }
     // update query
-    dbConn.query('UPDATE books SET ? WHERE id = ' + id, form_data, function(err, result) {
+    dbConn.all('UPDATE books SET ? WHERE id = ' + id, form_data, function(err, result) {
       //if(err) throw err
       if (err) {
         // set flash message
@@ -152,7 +152,7 @@ router.get('/delete/(:id)', function(req, res, next) {
 
   let id = req.params.id;
 
-  dbConn.query('DELETE FROM books WHERE id = ' + id, function(err, result) {
+  dbConn.all('DELETE FROM books WHERE id = ' + id, function(err, result) {
     //if(err) throw err
     if (err) {
       // set flash message
