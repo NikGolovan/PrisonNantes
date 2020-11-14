@@ -73,7 +73,7 @@ router.post('/add', function(req, res, next) {
                 })
             } else {
                 req.flash('success', 'Book successfully added');
-                res.redirect('/pages');
+                res.redirect('/');
             }
         })
     }
