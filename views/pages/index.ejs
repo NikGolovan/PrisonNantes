@@ -129,6 +129,12 @@
     $(document).ready(function () {
         $('#sidebarCollapse').on('click', function () {
             $('#sidebar').toggleClass('active');
+            var act = $('#sidebar').hasClass("active");
+            if (!act) {
+                $('#sidebarCollapse span').text('Fermer la barre latérale');
+            } else {
+                $('#sidebarCollapse span').text('Ouvrir la barre latérale');
+            }
         });
     });
 </script>
