@@ -23,16 +23,22 @@ router.get('/add', function(req, res, next) {
     // render to add.ejs
     res.render('pages/add', {
         name: '',
-        author: ''
+        author: '',
+        canceled: ''
     })
 })
 
 // add a new book
 router.post('/add', function(req, res, next) {
-    let id = req.body.id;
+    let canceled = req.body.canceled;
     let name = req.body.name;
     let author = req.body.author;
     let errors = false;
+
+    if (canceled) {
+        res.redirect('/pages');
+        return;
+    }
 
     if(name.length === 0 || author.length === 0) {
         errors = true;
