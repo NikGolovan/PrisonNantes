@@ -36,7 +36,7 @@ router.post('/add', function(req, res, next) {
     let errors = false;
 
     if (canceled) {
-        res.redirect('/pages');
+        res.redirect('/');
         return;
     }
 
