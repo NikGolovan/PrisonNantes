@@ -99,7 +99,8 @@ router.get('/edit/(:id)', function(req, res, next) {
                 title: 'Edit Book',
                 id: rows[0].id,
                 name: rows[0].name,
-                author: rows[0].author
+                author: rows[0].author,
+                canceled: ''
             })
         }
     })
@@ -111,7 +112,13 @@ router.post('/update/:id', function(req, res, next) {
     let id = req.params.id;
     let name = req.body.name;
     let author = req.body.author;
+    let canceled = req.body.canceled;
     let errors = false;
+
+    if (canceled) {
+        res.redirect('/');
+        return;
+    }
 
     if(name.length === 0 || author.length === 0) {
         errors = true;
@@ -147,7 +154,7 @@ router.post('/update/:id', function(req, res, next) {
                 })
             } else {
                 req.flash('success', 'Book successfully updated');
-                res.redirect('/pages');
+                res.redirect('/');
             }
         })
     }
