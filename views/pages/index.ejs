@@ -4,64 +4,133 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Books</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
 </head>
-<body class="container" style="margin-top: 50px;">
+<body>
+<div class="wrapper">
+    <!-- Sidebar Holder -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Gestionnare de Prison de Nantes</h3>
+        </div>
 
-<% if (messages.success) { %>
-    <div class="alert alert-success" role="alert"><%- messages.success %></div>
-<% } %>
-
-<% if (messages.error) { %>
-    <div class="alert alert-danger" role="alert"><%- messages.error %></div>
-<% } %>
-
-<div class="card">
-    <div class="card-header">
-        <ul class="nav nav-pills w-100">
-            <li class="nav-pill active">
-                <a class="nav-link">Books</a>
+        <ul class="list-unstyled components">
+            <p>Menu</p>
+            <li class="active">
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">Home</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li><a href="#">Home 1</a></li>
+                    <li><a href="#">Home 2</a></li>
+                    <li><a href="#">Home 3</a></li>
+                </ul>
             </li>
-            <li class="nav-pill ml-auto">
-                <a class="nav-link active" href="/pages/add">Add Book</a>
+            <li>
+                <a href="#">About</a>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">Pages</a>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                    <li><a href="#">Page 1</a></li>
+                    <li><a href="#">Page 2</a></li>
+                    <li><a href="#">Page 3</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Portfolio</a>
+            </li>
+            <li>
+                <a href="#">Contact</a>
             </li>
         </ul>
-    </div>
-    <div class="card-body">
+    </nav>
 
-        <% if(data.length) { %>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Author</th>
-                    <th width="200px">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% for(var i = 0; i< data.length; i++) { %>
-                    <tr>
-                        <th scope="row"><%= (i+1) %></th>
-                        <td><%= data[i].name%></td>
-                        <td><%= data[i].author%></td>
-                        <td>
-                            <a class="btn btn-success edit" href="../pages/edit/<%=data[i].id%>">Edit</a>
-                            <a class="btn btn-danger delete" onclick="return confirm('Supprimer détenu?')" href="../pages/delete/<%=data[i].id%>">Delete</a>
-                        </td>
-                    </tr>
+    <!-- Page Content Holder -->
+    <div style="width: 100%" id="content">
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                        <i class="glyphicon glyphicon-align-left"></i>
+                        <span>Fermer la barre latérale</span>
+                    </button>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Connecté en tant que directeur</a></li>
+                        <li><a href="#"><img src="http://localhost:3000/images/profile.png"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <% if (messages.success) { %>
+            <div class="alert alert-success" role="alert"><%- messages.success %></div>
+        <% } %>
+
+        <% if (messages.error) { %>
+            <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+        <% } %>
+
+        <div>
+            <div class="card-header">
+                <ul class="nav nav-pills w-100">
+                    <li class="nav-pill active">
+                        <a style="margin-bottom: 15px;" class="nav-link" href="/pages/add">Créer détenu</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+
+                <% if(data.length) { %>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Author</th>
+                            <th width="200px">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i = 0; i< data.length; i++) { %>
+                            <tr>
+                                <th scope="row"><%= (i+1) %></th>
+                                <td><%= data[i].name%></td>
+                                <td><%= data[i].author%></td>
+                                <td>
+                                    <a class="btn btn-success edit" href="../pages/edit/<%=data[i].id%>">Edit</a>
+                                    <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="../pages/delete/<%=data[i].id%>">Delete</a>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
                 <% } %>
-                </tbody>
-            </table>
-        <% } %>
 
-        <!-- if result is empty -->
-        <% if(!data.length) { %>
-            <p class="text-center">No book found!</p>
-        <% } %>
+                <!-- if result is empty -->
+                <% if(!data.length) { %>
+                    <p class="text-center">No book found!</p>
+                <% } %>
 
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- jQuery CDN -->
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<!-- Bootstrap Js CDN -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>
 
 </body>
 </html>
