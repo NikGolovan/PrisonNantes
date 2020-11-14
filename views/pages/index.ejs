@@ -47,7 +47,7 @@
                         <td><%= data[i].author%></td>
                         <td>
                             <a class="btn btn-success edit" href="../pages/edit/<%=data[i].id%>">Edit</a>
-                            <a class="btn btn-danger delete" onclick="return alert('Are You sure?')" href="../pages/delete/<%=data[i].id%>">Delete</a>
+                            <a class="btn btn-danger delete" onclick="return confirm('Supprimer détenu?')" href="../pages/delete/<%=data[i].id%>">Delete</a>
                         </td>
                     </tr>
                 <% } %>
