@@ -17,13 +17,41 @@
             <div class="card-body">
                 <form action="/pages/add" method="post">
                     <div class="form-group">
-                        <label>Name:</label>
+                        <label>Numéro écrou:</label>
                         <input type="text" class="form-control" name="name" value="<%= name %>" autocomplete="off">
                     </div>
                     <div class="form-group">
-                        <label>Author:</label>
+                        <label>Prénom:</label>
                         <input type="text" class="form-control" name="author" value="<%= author %>" autocomplete="off">
                     </div>
+                    <div class="form-group">
+                        <label>Nom:</label>
+                        <input type="text" class="form-control" name="author" value="<%= author %>" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label>Date de naissance:</label>
+                        <input type="text" class="form-control" name="author" value="<%= author %>" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label>Lieu de naissance:</label>
+                        <input type="text" class="form-control" name="author" value="<%= author %>" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label>Date incarcération:</label>
+                        <input type="text" class="form-control" name="author" value="<%= author %>" autocomplete="off">
+                    </div>
+                    <!--<div class="form-group">
+                        <label for="sel1">Motif de l'affaire:</label>
+                        <select class="form-control" id="sel1">
+                            <option>01-vols et délits assimilés</option>
+                            <option>02-coups et blessures</option>
+                            <option>03-escroquerie</option>
+                            <option>04-port d’armes prohibé</option>
+                            <option>05-conduite en état d’ivresse</option>
+                            <option>14-homicide</option>
+                            <option>15-proxénétisme</option>
+                        </select>
+                    </div> -->
                     <div class="form-group">
                         <input type="submit" class="btn btn-info" value="Créer détenu"/>
                         <input type="submit" name="canceled" class="btn btn-info" value="Annuler"/>
