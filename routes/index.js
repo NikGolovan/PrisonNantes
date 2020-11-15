@@ -5,7 +5,7 @@ var dbConn  = require('../lib/db');
 // display books page
 router.get('/', function(req, res, next) {
 
-  dbConn.all('SELECT * FROM books ORDER BY id desc',function(err,rows)     {
+  dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc',function(err,rows)     {
 
     if(err) {
       req.flash('error', err);
@@ -22,27 +22,44 @@ router.get('/', function(req, res, next) {
 router.get('/add', function(req, res, next) {
   // render to add.ejs
   res.render('pages/add', {
-    name: '',
-    author: ''
+    n_ecrou: '',
+    prenom: '',
+    nom: '',
+    date_naissance: '',
+    lieu_naissance: '',
+    canceled: ''
   })
 })
 
 // add a new book
 router.post('/add', function(req, res, next) {
+  let n_ecrou = req.body.n_ecrou;
+  let prenom = req.body.prenom;
+  let nom = req.body.nom;
+  let date_naissance = req.body.date_naissance;
+  let lieu_naissance = req.body.lieu_naissance;
+  let canceled = req.body.canceled;
 
-  let name = req.body.name;
-  let author = req.body.author;
   let errors = false;
 
-  if(name.length === 0 || author.length === 0) {
+  if (canceled) {
+    res.redirect('/');
+    return;
+  }
+
+  if(n_ecrou.length === 0 || prenom.length === 0 ||
+      nom.length === 0 || date_naissance.length === 0 || lieu_naissance.length === 0) {
     errors = true;
 
     // set flash message
-    req.flash('error', "Please enter name and author");
+    req.flash('error', "Veuillez saisir tous les champs.");
     // render to add.ejs with flash message
     res.render('pages/add', {
-      name: name,
-      author: author
+      n_ecrou: n_ecrou,
+      nom: nom,
+      prenom: prenom,
+      date_naissance: date_naissance,
+      lieu_naissance: lieu_naissance
     })
   }
 
@@ -50,73 +67,93 @@ router.post('/add', function(req, res, next) {
   if(!errors) {
 
     var form_data = {
-      name: name,
-      author: author
+      $n_ecrou: n_ecrou,
+      $prenom: prenom,
+      $nom: nom,
+      $date_naissance: date_naissance,
+      $lieu_naissance: lieu_naissance
     }
 
     // insert query
-    dbConn.all('INSERT INTO books values (?, ?)', form_data, function(err, result) {
+    dbConn.all('INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)', form_data, function(err, result) {
       //if(err) throw err
       if (err) {
         req.flash('error', err)
 
         // render to add.ejs
         res.render('pages/add', {
-          name: form_data.name,
-          author: form_data.author
+          n_ecrou: form_data.n_ecrou,
+          prenom: form_data.prenom,
+          nom: form_data.nom,
+          date_naissance: form_data.date_naissance,
+          lieu_naissance: form_data.lieu_naissance
         })
       } else {
-        req.flash('success', 'Book successfully added');
-        res.redirect('/pages');
+        req.flash('success', 'Nouveau détenu a été bien enregistré.');
+        res.redirect('/');
       }
     })
   }
 })
 
 // display edit book page
-router.get('/edit/(:id)', function(req, res, next) {
+router.get('/edit/(:n_ecrou)', function(req, res, next) {
 
-  let id = req.params.id;
+  let n_ecrou = req.params.n_ecrou;
 
-  dbConn.all('SELECT * FROM books WHERE id = ' + id, function(err, rows, fields) {
+  dbConn.all('SELECT * FROM Detenu WHERE n_ecrou = ' + n_ecrou, function(err, rows, fields) {
     if(err) throw err
 
     // if user not found
     if (rows.length <= 0) {
-      req.flash('error', 'Book not found with id = ' + id)
-      res.redirect('/pages')
+      req.flash('error', 'Pas de détenu avec n_ecrou = ' + n_ecrou)
+      res.redirect('/')
     }
     // if book found
     else {
       // render to edit.ejs
       res.render('pages/edit', {
-        title: 'Edit Book',
-        id: rows[0].id,
-        name: rows[0].name,
-        author: rows[0].author
+        title: 'Modifier Information',
+        n_ecrou: rows[0].n_ecrou,
+        prenom: rows[0].prenom,
+        nom: rows[0].nom,
+        date_naissance: rows[0].date_naissance,
+        lieu_naissance: rows[0].lieu_naissance,
+        canceled: ''
       })
     }
   })
 })
 
 // update book data
-router.post('/update/:id', function(req, res, next) {
+router.post('/update/:n_ecrou', function(req, res, next) {
 
-  let id = req.params.id;
-  let name = req.body.name;
-  let author = req.body.author;
+  let n_ecrou = req.params.n_ecrou;
+  let prenom = req.body.prenom;
+  let nom = req.body.nom;
+  let date_naissance = req.body.date_naissance;
+  let lieu_naissance = req.body.lieu_naissance;
+  let canceled = req.body.canceled;
   let errors = false;
 
-  if(name.length === 0 || author.length === 0) {
+  if (canceled) {
+    res.redirect('/');
+    return;
+  }
+
+  if(n_ecrou.length === 0 || prenom.length === 0 ||
+      nom.length === 0 || date_naissance.length === 0 || lieu_naissance.length === 0) {
     errors = true;
 
     // set flash message
-    req.flash('error', "Please enter name and author");
+    req.flash('error', "Veuillez saisir les modifications.");
     // render to add.ejs with flash message
     res.render('pages/edit', {
-      id: req.params.id,
-      name: name,
-      author: author
+      n_ecrou: req.params.n_ecrou,
+      nom: nom,
+      prenom: prenom,
+      date_naissance: date_naissance,
+      lieu_naissance: lieu_naissance
     })
   }
 
@@ -124,24 +161,28 @@ router.post('/update/:id', function(req, res, next) {
   if( !errors ) {
 
     var form_data = {
-      name: name,
-      author: author
+      $prenom: prenom,
+      $nom: nom,
+      $date_naissance: date_naissance,
+      $lieu_naissance: lieu_naissance
     }
     // update query
-    dbConn.all('UPDATE books SET ? WHERE id = ' + id, form_data, function(err, result) {
+    dbConn.run('UPDATE Detenu SET prenom = $prenom, nom = $nom, date_naissance = $date_naissance, lieu_naissance = $lieu_naissance WHERE n_ecrou = ' + n_ecrou, form_data, function(err, result) {
       //if(err) throw err
       if (err) {
         // set flash message
         req.flash('error', err)
         // render to edit.ejs
         res.render('pages/edit', {
-          id: req.params.id,
-          name: form_data.name,
-          author: form_data.author
+          n_ecrou: req.params.n_ecrou,
+          nom: nom,
+          prenom: prenom,
+          date_naissance: date_naissance,
+          lieu_naissance: lieu_naissance
         })
       } else {
-        req.flash('success', 'Book successfully updated');
-        res.redirect('/pages');
+        req.flash('success', 'Les informtions ont été bien mises à jour.');
+        res.redirect('/');
       }
     })
   }

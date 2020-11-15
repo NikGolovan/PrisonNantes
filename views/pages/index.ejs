@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Books</title>
+    <title>Prison Nantes</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
 </head>
@@ -13,7 +13,7 @@
         <div class="card-header">
             <ul class="nav nav-pills w-100">
                 <li class="nav-pill active">
-                    <a style="margin-bottom: 15px;" class="nav-link" href="/pages/add">Nouveau détenu</a>
+                    <a style="margin-bottom: 15px;" class="nav-link" href="/add">Nouveau détenu</a>
                 </li>
             </ul>
         </div>
@@ -21,7 +21,6 @@
         <% if (messages.success) { %>
             <div class="alert alert-success" role="alert"><%- messages.success %></div>
         <% } %>
-
         <% if (messages.error) { %>
             <div class="alert alert-danger" role="alert"><%- messages.error %></div>
         <% } %>
@@ -32,29 +31,32 @@
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Author</th>
+                            <th scope="col">Prenom</th>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Date de naissance</th>
+                            <th scope="col">Lieu de naissance</th>
                             <th width="200px">Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         <% for(var i = 0; i< data.length; i++) { %>
                             <tr>
-                                <th scope="row"><%= (i+1) %></th>
-                                <td><%= data[i].name%></td>
-                                <td><%= data[i].author%></td>
+                                <td><%= data[i].n_ecrou%></td>
+                                <td><%= data[i].prenom%></td>
+                                <td><%= data[i].nom%></td>
+                                <td><%= data[i].date_naissance%></td>
+                                <td><%= data[i].lieu_naissance%></td>
                                 <td>
-                                    <a class="btn btn-success edit" href="../pages/edit/<%=data[i].id%>">Edit</a>
-                                    <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="../pages/delete/<%=data[i].id%>">Delete</a>
+                                    <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Modifier</a>
+                                    <!-- <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="../pages/delete/<//%=data[i].id%//>">Delete</a> -->
                                 </td>
                             </tr>
                         <% } %>
                         </tbody>
                     </table>
                 <% } %>
-                <!-- if result is empty -->
                 <% if(!data.length) { %>
-                    <p class="text-center">No book found!</p>
+                    <p class="text-center">Pas de détenus.</p>
                 <% } %>
             </div>
         </div>
