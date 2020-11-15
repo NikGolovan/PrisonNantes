@@ -42,7 +42,7 @@ a, a:hover, a:focus {
 }
 
 /* ---------------------------------------------------
-    SIDEBAR STYLE
+    STYLE DE BARRE LATÉRALE
 ----------------------------------------------------- */
 .wrapper {
   display: flex;
@@ -140,7 +140,7 @@ a.article, a.article:hover {
 
 
 /* ---------------------------------------------------
-    CONTENT STYLE
+    STYLE DU CONTENU
 ----------------------------------------------------- */
 #content {
   padding: 20px;
@@ -149,7 +149,7 @@ a.article, a.article:hover {
 }
 
 /* ---------------------------------------------------
-    MEDIAQUERIES
+    NAVIGATION
 ----------------------------------------------------- */
 @media (max-width: 768px) {
   #sidebar {
