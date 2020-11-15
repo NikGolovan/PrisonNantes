@@ -93,19 +93,7 @@
 <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
 <!-- Bootstrap Js CDN -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../javascripts/scripts.js"></script>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-            var sideBarClosed = $('#sidebar').hasClass("active");
-            if (!sideBarClosed) {
-                $('#sidebarCollapse span').text('Fermer la barre latérale');
-            } else {
-                $('#sidebarCollapse span').text('Ouvrir la barre latérale');
-            }
-        });
-    });
-</script>
 </body>
 </html>
