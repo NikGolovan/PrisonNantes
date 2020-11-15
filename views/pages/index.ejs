@@ -47,8 +47,8 @@
                                 <td><%= data[i].date_naissance%></td>
                                 <td><%= data[i].lieu_naissance%></td>
                                 <td>
-                                    <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Modifier</a>
-                                    <!-- <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="../pages/delete/<//%=data[i].id%//>">Delete</a> -->
+                                    <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
+                                    <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
                                 </td>
                             </tr>
                         <% } %>

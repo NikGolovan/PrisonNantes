@@ -189,22 +189,22 @@ router.post('/update/:n_ecrou', function(req, res, next) {
 })
 
 // delete book
-router.get('/delete/(:id)', function(req, res, next) {
+router.get('/delete/(:n_ecrou)', function(req, res, next) {
 
-  let id = req.params.id;
+  let n_ecrou = req.params.n_ecrou;
 
-  dbConn.all('DELETE FROM books WHERE id = ' + id, function(err, result) {
+  dbConn.all('DELETE FROM Detenu WHERE n_ecrou = ' + n_ecrou, function(err, result) {
     //if(err) throw err
     if (err) {
       // set flash message
       req.flash('error', err)
       // redirect to books page
-      res.redirect('/pages')
+      res.redirect('/')
     } else {
       // set flash message
-      req.flash('success', 'Book successfully deleted! ID = ' + id)
+      req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
       // redirect to books page
-      res.redirect('/pages')
+      res.redirect('/')
     }
   })
 })
