@@ -8,15 +8,11 @@
     <link rel="stylesheet" type="text/css" href="../stylesheets/style.css" />
 </head>
 <body>
-<div class="wrapper">
-    <% include ../webcontent/navbar.html %>
-    <!-- Page Content Holder -->
-    <div style="width: 100%" id="content">
-        <% include ../webcontent/header.html %>
+<div class="wrapper"><% include ../webcontent/navbar.html %>
+    <div style="width: 100%" id="content"><% include ../webcontent/header.html %>
     <% if (messages.error) { %>
             <div class="alert alert-danger" role="alert"><%- messages.error %></div>
         <% } %>
-
         <div class="navbar navbar-default">
             <div class="card-body">
                 <form action="/pages/add" method="post">
