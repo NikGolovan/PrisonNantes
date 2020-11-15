@@ -18,6 +18,51 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/incarcerate', function(req, res, next) {
+
+  dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc',function(err,rows)     {
+
+    if(err) {
+      req.flash('error', err);
+      // render to views/books/index.ejs
+      res.render('pages/incarcerate',{data:''});
+    } else {
+      // render to views/books/index.ejs
+      res.render('pages/incarcerate',{data:rows});
+    }
+  });
+});
+
+router.get('/decision', function(req, res, next) {
+
+  dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc',function(err,rows)     {
+
+    if(err) {
+      req.flash('error', err);
+      // render to views/books/index.ejs
+      res.render('pages/decision',{data:''});
+    } else {
+      // render to views/books/index.ejs
+      res.render('pages/decision',{data:rows});
+    }
+  });
+});
+
+router.get('/preventive', function(req, res, next) {
+
+  dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc',function(err,rows)     {
+
+    if(err) {
+      req.flash('error', err);
+      // render to views/books/index.ejs
+      res.render('pages/preventive',{data:''});
+    } else {
+      // render to views/books/index.ejs
+      res.render('pages/preventive',{data:rows});
+    }
+  });
+});
+
 // display add book page
 router.get('/add', function(req, res, next) {
   // render to add.ejs
