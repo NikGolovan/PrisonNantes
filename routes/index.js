@@ -78,8 +78,8 @@ router.post('/add', function(req, res, next) {
     dbConn.all('INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)', form_data, function(err, result) {
       //if(err) throw err
       if (err) {
-        req.flash('error', err)
-
+        let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "Le détenu avec le numéro d'écrou " + n_ecrou + " déjà existe." : err;
+        req.flash('error', erreurMsg)
         // render to add.ejs
         res.render('pages/add', {
           n_ecrou: form_data.n_ecrou,
