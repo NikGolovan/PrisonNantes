@@ -29,12 +29,6 @@ router.post('/', function(req, res, next) {
     let n_motif = req.body.n_motif;
     let errors = false;
 
-    console.log(n_ecrou)
-    console.log(n_affaire)
-    console.log(nom_juridiction)
-    console.log(date_incarceration)
-    console.log(n_motif)
-
     if(n_ecrou.length === 0 || n_affaire.length === 0 ||
         nom_juridiction.length === 0 || date_incarceration.length === 0 || n_motif.length === 0) {
         errors = true;
@@ -49,11 +43,11 @@ router.post('/', function(req, res, next) {
             } else {
                 res.render('pages/incarcerate',{
                     data: rows,
-                    n_ecrou: '',
-                    n_affaire: '',
-                    nom_juridiction: '',
-                    date_incarceration: '',
-                    n_motif: ''
+                    n_ecrou: n_ecrou,
+                    n_affaire: n_affaire,
+                    nom_juridiction: nom_juridiction,
+                    date_incarceration: date_incarceration,
+                    n_motif: n_motif
                 });
             }
         });
