@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/incarcerate', function(req, res, next) {
+/*router.get('/incarcerate', function(req, res, next) {
 
   dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc',function(err,rows)     {
 
@@ -61,7 +61,7 @@ router.get('/preventive', function(req, res, next) {
       res.render('pages/preventive',{data:rows});
     }
   });
-});
+});  */
 
 // display add book page
 router.get('/add', function(req, res, next) {

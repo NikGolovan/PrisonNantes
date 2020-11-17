@@ -10,105 +10,87 @@
 <body>
 <div class="wrapper"><% include ../webcontent/navbar.html %>
     <div style="width: 100%" id="content"><% include ../webcontent/header.html %>
+        <% if (messages.success) { %>
+            <div class="alert alert-success" role="alert"><%- messages.success %></div>
+        <% } %>
+        <% if (messages.error) { %>
+            <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+        <% } %>
         <div class="navbar navbar-default">
-            The fields goes here.
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-6">
-                    <div class="navbar navbar-default">
-                        <% if (messages.success) { %>
-                            <div class="alert alert-success" role="alert"><%- messages.success %></div>
-                        <% } %>
-                        <% if (messages.error) { %>
-                            <div class="alert alert-danger" role="alert"><%- messages.error %></div>
-                        <% } %>
-                        <div>
-                            <div>
-                                <% if(data.length) { %>
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Prenom</th>
-                                            <th scope="col">Nom</th>
-                                            <th scope="col">Date de naissance</th>
-                                            <th scope="col">Lieu de naissance</th>
-                                            <th width="200px">Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <% for(var i = 0; i< data.length; i++) { %>
-                                            <tr>
-                                                <td><%= data[i].n_ecrou%></td>
-                                                <td><%= data[i].prenom%></td>
-                                                <td><%= data[i].nom%></td>
-                                                <td><%= data[i].date_naissance%></td>
-                                                <td><%= data[i].lieu_naissance%></td>
-                                                <td>
-                                                    <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
-                                                    <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
-                                                </td>
-                                            </tr>
-                                        <% } %>
-                                        </tbody>
-                                    </table>
-                                <% } %>
-                                <% if(!data.length) { %>
-                                    <p class="text-center">Pas de détenus.</p>
-                                <% } %>
-                            </div>
-                        </div>
+            <form action="incarcerate" method="post">
+                <div class="form-group">
+                    <label>Numéro écrou:</label>
+                    <input type="text" class="form-control" name="n_ecrou" value="<%= n_ecrou %>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Numéro affaire:</label>
+                    <input type="text" class="form-control" name="n_affaire" value="<%= n_affaire %>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Juridiction:</label>
+                    <input type="text" class="form-control" name="nom_juridiction" value="<%= nom_juridiction %>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Date incarceration:</label>
+                    <input type="text" class="form-control" name="date_incarceration" value="<%= date_incarceration %>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="sel1">Numéro motif:</label>
+                        <select name="n_motif" class="form-control" id="sel1">
+                            <option>01</option>
+                            <option>02</option>
+                            <option>03</option>
+                            <option>04</option>
+                            <option>05</option>
+                            <option>14</option>
+                            <option>15</option>
+                        </select>
                     </div>
                 </div>
-                <div class="col-xs-6">
-                    <div class="navbar navbar-default">
-                        <% if (messages.success) { %>
-                            <div class="alert alert-success" role="alert"><%- messages.success %></div>
-                        <% } %>
-                        <% if (messages.error) { %>
-                            <div class="alert alert-danger" role="alert"><%- messages.error %></div>
-                        <% } %>
-                        <div>
-                            <div>
-                                <% if(data.length) { %>
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Prenom</th>
-                                            <th scope="col">Nom</th>
-                                            <th scope="col">Date de naissance</th>
-                                            <th scope="col">Lieu de naissance</th>
-                                            <th width="200px">Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <% for(var i = 0; i< data.length; i++) { %>
-                                            <tr>
-                                                <td><%= data[i].n_ecrou%></td>
-                                                <td><%= data[i].prenom%></td>
-                                                <td><%= data[i].nom%></td>
-                                                <td><%= data[i].date_naissance%></td>
-                                                <td><%= data[i].lieu_naissance%></td>
-                                                <td>
-                                                    <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
-                                                    <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
-                                                </td>
-                                            </tr>
-                                        <% } %>
-                                        </tbody>
-                                    </table>
-                                <% } %>
-                                <% if(!data.length) { %>
-                                    <p class="text-center">Pas d'incarcérés.</p>
-                                <% } %>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-info" value="Incarcérer"/>
                 </div>
+            </form>
+            </div>
+    <div class="navbar navbar-default">
+        <div>
+            <div>
+                <% if(data.length) { %>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col"># Ecrou</th>
+                            <th scope="col"># Affaire</th>
+                            <th scope="col">Juridiction</th>
+                            <th scope="col">Date incarceration</th>
+                            <th scope="col"># Motif</th>
+                            <th width="200px">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i = 0; i< data.length; i++) { %>
+                            <tr>
+                                <td><%= data[i].n_ecrou%></td>
+                                <td><%= data[i].n_affaire%></td>
+                                <td><%= data[i].nom_juridiction%></td>
+                                <td><%= data[i].date_incarceration%></td>
+                                <td><%= data[i].n_motif%></td>
+                                <td>
+                                    <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
+                                    <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                <% } %>
+                <% if(!data.length) { %>
+                    <p class="text-center">Pas de incarcérés.</p>
+                <% } %>
             </div>
         </div>
+       </div>
     </div>
 </div>
 <!-- Inclure jQuery CDN -->
