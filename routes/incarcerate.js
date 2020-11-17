@@ -31,6 +31,7 @@ router.post('/', function(req, res, next) {
 
     if(n_ecrou.length === 0 || n_affaire.length === 0 ||
         nom_juridiction.length === 0 || date_incarceration.length === 0 || n_motif.length === 0) {
+
         errors = true;
 
         // set flash message
