@@ -13,7 +13,7 @@
         <div class="card-header">
             <ul class="nav nav-pills w-100">
                 <li class="nav-pill active">
-                    <a style="margin-bottom: 15px;" class="nav-link" href="/addIncarcerate">Prendre décision</a>
+                    <a style="margin-bottom: 15px;" class="nav-link" href="/index">Accueil</a>
                 </li>
             </ul>
         </div>
@@ -25,6 +25,25 @@
                 <div class="alert alert-danger" role="alert"><%- messages.error %></div>
             <% } %>
             <div>
+                <div class="navbar navbar-default">
+                    <form action="incarcerate" method="post">
+                        <div class="form-group">
+                            <label>Type de decision:</label>
+                            <input type="text" class="form-control" name="n_type_decision" value="<%= n_type_decision %>" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Prisonier:</label>
+                            <input type="text" class="form-control" name="n_ecrou" value="<%= n_ecrou %>" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Date de la decision:</label>
+                            <input type="text" class="form-control" name="date_decision" value="<%= date_decision %>" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-info" value="Prendre decision"/>
+                        </div>
+                    </form>
+                </div>
                 <div>
                     <% if(data.length) { %>
                         <table class="table">
