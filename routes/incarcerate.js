@@ -77,13 +77,21 @@ router.post('/', function(req, res, next) {
                 let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
                 req.flash('error', erreurMsg)
                 // render to add.ejs
-                res.render('pages/incarcerate', {
-                    n_ecrou: form_data.n_ecrou,
-                    n_affaire: form_data.n_affaire,
-                    nom_juridiction: form_data.nom_juridiction,
-                    date_incarceration: form_data.date_incarceration,
-                    n_motif: form_data.n_motif
-                })
+                dbConn.all('SELECT * FROM Incarceration ORDER BY n_ecrou desc', function(err,rows) {
+                    if(err) {
+                        req.flash('error', err);
+                        res.render('pages/incarcerate',{data:''});
+                    } else {
+                        res.render('pages/incarcerate',{
+                            data: rows,
+                            n_ecrou: '',
+                            n_affaire: '',
+                            nom_juridiction: '',
+                            date_incarceration: '',
+                            n_motif: ''
+                        });
+                    }
+                });
             } else {
                 req.flash('success', 'Nouveau incarcéré a été bien enregistré.');
                 res.redirect(req.get('referer'));
