@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var dbConn  = require('../lib/db');
+var dbConn = require('../lib/db');
+var Detenu = require('../public/javascripts/core/detenu');
 
 // display books page
 router.get('/', function(req, res, next) {
@@ -33,45 +34,39 @@ router.get('/add', function(req, res, next) {
 
 // add a new book
 router.post('/add', function(req, res, next) {
-  let n_ecrou = req.body.n_ecrou;
-  let prenom = req.body.prenom;
-  let nom = req.body.nom;
-  let date_naissance = req.body.date_naissance;
-  let lieu_naissance = req.body.lieu_naissance;
-  let canceled = req.body.canceled;
-
+  const detenu = new Detenu({
+    n_ecrou: req.body.n_ecrou,
+    prenom: req.body.prenom,
+    nom: req.body.nom,
+    date_naissance: req.body.date_naissance,
+    lieu_naissance: req.body.lieu_naissance
+  });
   let errors = false;
 
-  if (canceled) {
+  if (req.body.canceled) {
     res.redirect('/');
     return;
   }
 
-  if(n_ecrou.length === 0 || prenom.length === 0 ||
-      nom.length === 0 || date_naissance.length === 0 || lieu_naissance.length === 0) {
+  if(detenu["n_ecrou"].length === 0 || detenu["prenom"].length === 0 ||
+      detenu["nom"].length === 0 || detenu["date_naissance"].length === 0 || detenu["lieu_naissance"].length === 0) {
     errors = true;
 
     // set flash message
     req.flash('error', "Veuillez saisir tous les champs.");
     // render to add.ejs with flash message
-    res.render('pages/add', {
-      n_ecrou: n_ecrou,
-      nom: nom,
-      prenom: prenom,
-      date_naissance: date_naissance,
-      lieu_naissance: lieu_naissance
-    })
+    res.render('pages/add', detenu);
   }
 
   // if no error
   if(!errors) {
 
     var form_data = {
-      $n_ecrou: n_ecrou,
-      $prenom: prenom,
-      $nom: nom,
-      $date_naissance: date_naissance,
-      $lieu_naissance: lieu_naissance
+      $n_ecrou: detenu["n_ecrou"],
+      $prenom: detenu["prenom"],
+      $nom: detenu["nom"],
+      $date_naissance: detenu["date_naissance"],
+      $lieu_naissance: detenu["lieu_naissance"]
     }
 
     // insert query
@@ -101,7 +96,7 @@ router.get('/edit/(:n_ecrou)', function(req, res, next) {
 
   let n_ecrou = req.params.n_ecrou;
 
-  dbConn.all('SELECT * FROM Detenu WHERE n_ecrou = ' + n_ecrou, function(err, rows, fields) {
+  dbConn.all("SELECT * FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'", function(err, rows, fields) {
     if(err) throw err
 
     // if user not found
@@ -167,7 +162,7 @@ router.post('/update/:n_ecrou', function(req, res, next) {
       $lieu_naissance: lieu_naissance
     }
     // update query
-    dbConn.run('UPDATE Detenu SET prenom = $prenom, nom = $nom, date_naissance = $date_naissance, lieu_naissance = $lieu_naissance WHERE n_ecrou = ' + n_ecrou, form_data, function(err, result) {
+    dbConn.run("UPDATE Detenu SET prenom = $prenom, nom = $nom, date_naissance = $date_naissance, lieu_naissance = $lieu_naissance WHERE n_ecrou = '" + n_ecrou + "'", form_data, function(err, result) {
       //if(err) throw err
       if (err) {
         // set flash message
@@ -193,7 +188,7 @@ router.get('/delete/(:n_ecrou)', function(req, res, next) {
 
   let n_ecrou = req.params.n_ecrou;
 
-  dbConn.all('DELETE FROM Detenu WHERE n_ecrou = ' + n_ecrou, function(err, result) {
+  dbConn.all("DELETE FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'", function(err, result) {
     //if(err) throw err
     if (err) {
       // set flash message

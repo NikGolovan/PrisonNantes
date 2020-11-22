@@ -9,6 +9,7 @@ const Detenu = function (options) {
     this.lieu_naissance = options.lieu_naissance;
 }
 
-const detenu = new Detenu({n_ecrou: 1, prenom: 'Prenom', nom: 'Nom', date_naissance: '3/3/3', lieu_naissance: 'France'});
-console.log(detenu);
+//const detenu = new Detenu({n_ecrou: 1, prenom: 'Prenom', nom: 'Nom', date_naissance: '3/3/3', lieu_naissance: 'France'});
+//console.log(detenu);
 
+module.exports = Detenu;
