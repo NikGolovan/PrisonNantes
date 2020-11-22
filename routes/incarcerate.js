@@ -75,7 +75,7 @@ router.post('/', function(req, res, next) {
                 dbConn.all(queryInsert, form_data, function (err, result) {
                     if (err) {
                         let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
-                        req.flash('error', err)
+                        req.flash('error', erreurMsg)
                         // render to add.ejs
                         dbConn.all('SELECT * FROM Incarceration ORDER BY n_ecrou desc', function (err, rows) {
                             if (err) {
