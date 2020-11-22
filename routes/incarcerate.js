@@ -1,28 +1,23 @@
 var express = require('express');
 var router = express.Router();
 var dbConn  = require('../lib/db');
-var common = require('../public/javascripts/core/common_functions');
 
 router.get('/', function(req, res, next) {
-    let query = 'SELECT * FROM Incarceration ORDER BY n_ecrou desc';
-    let options = { n_ecrou: '', n_affaire: '', nom_juridiction: '', date_incarceration: '', n_motif: ''}
-    common.initTableData(query, 'pages/incarcerate', this.data, req, res); // marche pas
-    common.renderPage('pages/incarcerate', options, req, res, null, null); // marche pas
-    /*    dbConn.all('SELECT * FROM Incarceration ORDER BY n_ecrou desc', function(err,rows) {
-            if(err) {
-                req.flash('error', err);
-                res.render('pages/incarcerate',{data:''});
-            } else {
-                res.render('pages/incarcerate',{
-                    data: rows,
-                    n_ecrou: '',
-                    n_affaire: '',
-                    nom_juridiction: '',
-                    date_incarceration: '',
-                    n_motif: ''
-                });
-            }
-        });*/
+    dbConn.all('SELECT * FROM Incarceration ORDER BY n_ecrou desc', function(err,rows) {
+        if(err) {
+            req.flash('error', err);
+            res.render('pages/incarcerate',{data:''});
+        } else {
+            res.render('pages/incarcerate',{
+                data: rows,
+                n_ecrou: '',
+                n_affaire: '',
+                nom_juridiction: '',
+                date_incarceration: '',
+                n_motif: ''
+            });
+        }
+    });
 });
 
 // incarcérer
