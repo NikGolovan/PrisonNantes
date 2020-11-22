@@ -65,8 +65,8 @@ router.post('/', function(req, res, next) {
             $n_motif: n_motif
         }
 
-        let queryInsert = 'INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)';
-        let queryCheckId = 'SELECT * FROM Detenu WHERE n_ecrou = ' + n_ecrou;
+        let queryInsert = "INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)";
+        let queryCheckId = "SELECT \"n_ecrou\" FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
 
         dbConn.all(queryCheckId, function (err, result) {
             if (err) throw err;
