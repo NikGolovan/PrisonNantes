@@ -65,31 +65,42 @@ router.post('/', function(req, res, next) {
             $n_motif: n_motif
         }
 
-        // insert query
-        dbConn.all('INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)', form_data, function(err, result) {
-            //if(err) throw err
-            if (err) {
-                let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
-                req.flash('error', erreurMsg)
-                // render to add.ejs
-                dbConn.all('SELECT * FROM Incarceration ORDER BY n_ecrou desc', function(err,rows) {
-                    if(err) {
-                        req.flash('error', err);
-                        res.render('pages/incarcerate',{data:''});
-                    } else {
-                        res.render('pages/incarcerate',{
-                            data: rows,
-                            n_ecrou: '',
-                            n_affaire: '',
-                            nom_juridiction: '',
-                            date_incarceration: '',
-                            n_motif: ''
+        let queryInsert = 'INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)';
+        let queryCheckId = 'SELECT * FROM Detenu WHERE n_ecrou = ' + n_ecrou;
+
+        dbConn.all(queryCheckId, function (err, result) {
+            if (err) throw err;
+            if (result.length > 0) {
+                // insert query
+                dbConn.all(queryInsert, form_data, function (err, result) {
+                    if (err) {
+                        let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
+                        req.flash('error', err)
+                        // render to add.ejs
+                        dbConn.all('SELECT * FROM Incarceration ORDER BY n_ecrou desc', function (err, rows) {
+                            if (err) {
+                                req.flash('error', err);
+                                res.render('pages/incarcerate', {data: ''});
+                            } else {
+                                res.render('pages/incarcerate', {
+                                    data: rows,
+                                    n_ecrou: '',
+                                    n_affaire: '',
+                                    nom_juridiction: '',
+                                    date_incarceration: '',
+                                    n_motif: ''
+                                });
+                            }
                         });
+                    } else {
+                        req.flash('success', 'Nouveau incarcéré a été bien enregistré.');
+                        res.redirect(req.get('referer'));
                     }
-                });
+                })
             } else {
-                req.flash('success', 'Nouveau incarcéré a été bien enregistré.');
-                res.redirect(req.get('referer'));
+                req.flash('error', "Detenu avec le numero " + n_ecrou + " n'existe pas.");
+                res.redirect('/incarcerate');
+                return;
             }
         })
     }
