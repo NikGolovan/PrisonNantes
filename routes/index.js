@@ -47,10 +47,7 @@ router.post('/add', function(req, res, next) {
     return;
   }
 
-  if(detenu["n_ecrou"].length === 0 || detenu["prenom"].length === 0 ||
-      detenu["nom"].length === 0 || detenu["date_naissance"].length === 0 || detenu["lieu_naissance"].length === 0) {
-    errors = true;
-
+  if(!allFieldsAreSet(detenu)) {
     // set flash message
     req.flash('error', "Veuillez saisir tous les champs.");
     // render to add.ejs with flash message
@@ -199,5 +196,13 @@ router.get('/delete/(:n_ecrou)', function(req, res, next) {
     }
   })
 })
+
+function allFieldsAreSet(fields) {
+  for (let key in fields) {
+    if (fields[key].length === 0)
+      return false;
+  }
+  return true;
+}
 
 module.exports = router;
