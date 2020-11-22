@@ -41,7 +41,6 @@ router.post('/add', function(req, res, next) {
     date_naissance: req.body.date_naissance,
     lieu_naissance: req.body.lieu_naissance
   });
-  let errors = false;
 
   if (req.body.canceled) {
     res.redirect('/');
@@ -56,39 +55,36 @@ router.post('/add', function(req, res, next) {
     req.flash('error', "Veuillez saisir tous les champs.");
     // render to add.ejs with flash message
     res.render('pages/add', detenu);
+    return;
   }
 
-  // if no error
-  if(!errors) {
+  var form_data = {
+    $n_ecrou: detenu["n_ecrou"],
+    $prenom: detenu["prenom"],
+    $nom: detenu["nom"],
+    $date_naissance: detenu["date_naissance"],
+    $lieu_naissance: detenu["lieu_naissance"]
+  }
 
-    var form_data = {
-      $n_ecrou: detenu["n_ecrou"],
-      $prenom: detenu["prenom"],
-      $nom: detenu["nom"],
-      $date_naissance: detenu["date_naissance"],
-      $lieu_naissance: detenu["lieu_naissance"]
+  // insert query
+  dbConn.all('INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)', form_data, function (err, result) {
+    //if(err) throw err
+    if (err) {
+      let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "Le détenu avec le numéro d'écrou " + n_ecrou + " déjà existe." : err;
+      req.flash('error', erreurMsg)
+      // render to add.ejs
+      res.render('pages/add', {
+        n_ecrou: form_data.n_ecrou,
+        prenom: form_data.prenom,
+        nom: form_data.nom,
+        date_naissance: form_data.date_naissance,
+        lieu_naissance: form_data.lieu_naissance
+      })
+    } else {
+      req.flash('success', 'Nouveau détenu a été bien enregistré.');
+      res.redirect('/');
     }
-
-    // insert query
-    dbConn.all('INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)', form_data, function(err, result) {
-      //if(err) throw err
-      if (err) {
-        let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "Le détenu avec le numéro d'écrou " + n_ecrou + " déjà existe." : err;
-        req.flash('error', erreurMsg)
-        // render to add.ejs
-        res.render('pages/add', {
-          n_ecrou: form_data.n_ecrou,
-          prenom: form_data.prenom,
-          nom: form_data.nom,
-          date_naissance: form_data.date_naissance,
-          lieu_naissance: form_data.lieu_naissance
-        })
-      } else {
-        req.flash('success', 'Nouveau détenu a été bien enregistré.');
-        res.redirect('/');
-      }
-    })
-  }
+  })
 })
 
 // display edit book page
