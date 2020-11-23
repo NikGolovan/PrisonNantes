@@ -137,7 +137,12 @@ a.article, a.article:hover {
   color: #fff !important;
 }
 
-
+h1{
+  margin: auto;
+  margin-left: 200px;
+  align-items: center;
+  justify-content: center;
+}
 
 /* ---------------------------------------------------
     STYLE DU CONTENU
