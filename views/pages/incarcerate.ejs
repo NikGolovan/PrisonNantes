@@ -23,43 +23,6 @@
                 </li>
             </ul>
         </div>
-        <div class="navbar navbar-default">
-            <form action="incarcerate" method="post">
-                <div class="form-group">
-                    <label>Numéro écrou:</label>
-                    <input type="text" class="form-control" name="n_ecrou" value="<%= n_ecrou %>" maxlength="10" autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label>Numéro affaire:</label>
-                    <input type="text" class="form-control" name="n_affaire" value="<%= n_affaire %>" maxlength="10" autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label>Juridiction:</label>
-                    <input type="text" class="form-control" name="nom_juridiction" value="<%= nom_juridiction %>" maxlength="30" autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label>Date incarceration:</label>
-                    <input type="date" class="form-control" name="date_incarceration" value="<%= date_incarceration %>" autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <div class="form-group">
-                        <label for="sel1">Numéro motif:</label>
-                        <select name="n_motif" class="form-control" id="sel1">
-                            <option>01</option>
-                            <option>02</option>
-                            <option>03</option>
-                            <option>04</option>
-                            <option>05</option>
-                            <option>14</option>
-                            <option>15</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="btn btn-info" value="Incarcérer"/>
-                </div>
-            </form>
-            </div>
     <div class="navbar navbar-default">
         <div>
             <div>
@@ -103,12 +66,18 @@
 <script>
     var title = document.getElementById("title");
     var indActive = document.getElementById("index");
-    var desActive = document.getElementById("decision");
     var incActive = document.getElementById("incarcerate");
     var preActive = document.getElementById("preventive");
+    var decActive = document.getElementById("decision")
+    var conActive = document.getElementById("condamnation");
+    var redActive = document.getElementById("reduction");
+    var libActive = document.getElementById("liberation");
     title.textContent="Incarcerer un detenu";
     indActive.className = "";
-    desActive.className = "";
+    decActive.className = "";
+    conActive.className = "";
+    redActive.className = "";
+    libActive.className = "";
     incActive.className += "active";
     preActive.className = "";
 </script>

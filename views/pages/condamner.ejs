@@ -40,7 +40,11 @@
                             <input type="text" class="form-control" name="date_decision" value="<%= date_decision %>" autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <input type="submit" class="btn btn-info" value="Prendre decision"/>
+                            <label>Duration:</label>
+                            <input type="text" class="form-control" name="duree" value="<%= duree %>" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-info" value="Condamner"/>
                         </div>
                     </form>
                 </div>
@@ -50,20 +54,20 @@
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Date de décision</th>
-                                <th scope="col">Type de décision numéro</th>
+                                <th scope="col">Type de decision</th>
+                                <th scope="col">Prisoner</th>
+                                <th scope="col">Date de decision</th>
                                 <th scope="col">Duration</th>
-                                <th scope="col">Incarceré</th>
                                 <th width="200px">Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             <% for(var i = 0; i< data.length; i++) { %>
                                 <tr>
+                                    <td><%= data[i].n_type_decision%></td>
+                                    <td><%= data[i].n_ecrou%></td>
                                     <td><%= data[i].date_decision%></td>
-                                    <td><%= data[i].typeDecision%></td>
-                                    <td><%= data[i].duration%></td>
-                                    <td><%= data[i].incarcere%></td>
+                                    <td><%= data[i].duree%></td>
                                     <td>
                                         <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
                                         <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
@@ -74,7 +78,7 @@
                         </table>
                     <% } %>
                     <% if(!data.length) { %>
-                        <p class="text-center">Pas de decisions.</p>
+                        <p class="text-center">Pas de condamnations.</p>
                     <% } %>
                 </div>
             </div>
@@ -87,9 +91,15 @@
     var desActive = document.getElementById("decision");
     var incActive = document.getElementById("incarcerate");
     var preActive = document.getElementById("preventive");
-    title.textContent="Prendre une decision";
+    var conActive = document.getElementById("condamnation");
+    var redActive = document.getElementById("reduction");
+    var libActive = document.getElementById("liberation");
+    title.textContent="Condamner un individu";
     indActive.className = "";
     desActive.className += "active";
+    conActive.className += "active";
+    redActive.className = "";
+    libActive.className = "";
     incActive.className = "";
     preActive.className = "";
 </script>
