@@ -9,40 +9,54 @@
 </head>
 <body>
 <div class="wrapper"><% include ../webcontent/navbar.html %>
-    <div class="navbar navbar-default">
-        <div>
+    <div style="width: 100%" id="content"><% include ../webcontent/header.html %>
+        <% if (messages.success) { %>
+            <div class="alert alert-success" role="alert"><%- messages.success %></div>
+        <% } %>
+        <% if (messages.error) { %>
+            <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+        <% } %>
+        <div class="card-header">
+            <ul class="nav nav-pills w-100">
+                <li class="nav-pill active">
+                    <a style="margin-bottom: 15px;" class="nav-link" href="/index">Accueil</a>
+                </li>
+            </ul>
+        </div>
+        <div class="navbar navbar-default">
             <div>
-                <% if(data.length) { %>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col"># Ecrou</th>
-                            <th scope="col">Prenom</th>
-                            <th scope="col">Nom</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <% for(var i = 0; i< data.length; i++) { %>
+                <div>
+                    <% if(data.length) { %>
+                        <table class="table">
+                            <thead>
                             <tr>
-                                <td><%= data[i].n_ecrou%></td>
-                                <td><%= data[i].prenom%></td>
-                                <td><%= data[i].nom%></td>
-                                <td>
-                                    <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
-                                    <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
-                                </td>
+                                <th scope="col"># Ecrou</th>
+                                <th scope="col">Prenom</th>
+                                <th scope="col">Nom</th>
                             </tr>
-                        <% } %>
-                        </tbody>
-                    </table>
-                <% } %>
-                <% if(!data.length) { %>
-                    <p class="text-center">Pas de incarcérés.</p>
-                <% } %>
+                            </thead>
+                            <tbody>
+                            <% for(var i = 0; i< data.length; i++) { %>
+                                <tr>
+                                    <td><%= data[i].n_ecrou%></td>
+                                    <td><%= data[i].prenom%></td>
+                                    <td><%= data[i].nom%></td>
+                                    <td>
+                                        <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
+                                        <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                            </tbody>
+                        </table>
+                    <% } %>
+                    <% if(!data.length) { %>
+                        <p class="text-center">Pas de detenus en préventive.</p>
+                    <% } %>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 <script>
     var indActive = document.getElementById("index");
