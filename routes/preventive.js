@@ -3,7 +3,7 @@ var router = express.Router();
 var dbConn  = require('../lib/db');
 
 router.get('/', function(req, res, next) {
-    dbConn.all('SELECT * FROM Detenu INNER JOIN Decision ON Detenu.n_ecrou = Decision.n_ecrou ORDER BY n_ecrou desc', function(err,rows) {
+    dbConn.all('SELECT * FROM Detenu INNER JOIN Decision ON Decision.n_type_decision <> 1 ORDER BY n_ecrou desc', function(err,rows) {
         if(err) {
             req.flash('error', err);
             res.render('pages/preventive',{data:''});
