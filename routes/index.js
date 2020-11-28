@@ -5,7 +5,7 @@ var Detenu = require('../public/javascripts/core/detenu');
 
 router.get('/', function(req, res, next) {
 
-  dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc',function(err,rows)     {
+  dbConn.all('SELECT * FROM Detenu INNER JOIN Incarceration ON Detenu.n_ecrou = Incarceration.n_ecrou ORDER BY n_ecrou desc',function(err,rows)     {
 
     if(err) {
       req.flash('error', err);
@@ -81,6 +81,7 @@ router.post('/add', function(req, res, next) {
     $n_affaire: req.body.n_affaire,
     $n_motif: req.body.n_motif
   }
+
   // insert query
   dbConn.all('INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)', form_data, function (err, result) { if (err) throw err })
   dbConn.all('INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)', form_data1, function (err, result) { if (err) throw err })
