@@ -50,6 +50,14 @@ router.post('/add', function(req, res, next) {
     n_motif: req.body.n_motif
   });
 
+  var form_data = {
+    $n_ecrou: detenu["n_ecrou"],
+    $prenom: detenu["prenom"],
+    $nom: detenu["nom"],
+    $date_naissance: detenu["date_naissance"],
+    $lieu_naissance: detenu["lieu_naissance"]
+  }
+
   if (req.body.canceled) {
     res.redirect('/');
     return;
@@ -88,6 +96,25 @@ router.post('/add', function(req, res, next) {
         nom: form_data.nom,
         date_naissance: form_data.date_naissance,
         lieu_naissance: form_data.lieu_naissance
+      })
+    } else {
+      req.flash('success', 'Nouveau détenu a été bien enregistré.');
+      res.redirect('/');
+    }
+  })
+
+  dbConn.all("INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)", form_data, function (err, result) {
+    //if(err) throw err
+    if (err) {
+      let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "Le détenu avec le numéro d'écrou " + n_ecrou + " déjà existe." : err;
+      req.flash('error', erreurMsg)
+      // render to add.ejs
+      res.render('pages/add', {
+        n_ecrou: form_data.n_ecrou,
+        n_affaire: form_data.n_affaire,
+        nom_juridiction: form_data.nom_juridiction,
+        date_incarceration: form_data.date_incarceration,
+        n_motif: form_data.n_motif
       })
     } else {
       req.flash('success', 'Nouveau détenu a été bien enregistré.');
@@ -295,6 +322,7 @@ router.get('/delete/(:n_ecrou)', function(req, res, next) {
     }
   })
 })
+
 function allFieldsAreSet(fields) {
   for (let key in fields) {
     if (fields[key].length === 0)
