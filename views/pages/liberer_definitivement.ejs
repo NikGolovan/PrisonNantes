@@ -53,7 +53,6 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th scope="col">#</th>
                                 <th scope="col">Type decision</th>
                                 <th scope="col">N ecrou</th>
                                 <th scope="col">Date decision</th>
@@ -70,7 +69,6 @@
                                     <td><%= data[i].date_liberation%></td>
                                     <td>
                                         <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
-                                        <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
                                     </td>
                                 </tr>
                             <% } %>
