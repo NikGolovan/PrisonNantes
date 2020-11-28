@@ -58,9 +58,17 @@ router.post('/', function(req, res, next) {
             $duree: duree
         }
 
+        var form_data_decision = {
+            $n_type_decision: n_type_decision,
+            $n_ecrou: n_ecrou,
+            $date_decision: date_decision,
+        }
+
         let queryInsert = "INSERT INTO Condamnation values ($n_type_decision, $n_ecrou, $date_decision, $duree)";
+        let queryInsertDecision = "INSERT INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
         let queryCheckId = "SELECT \"n_ecrou\" FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
 
+        dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {if (err) throw err; console.log(result)})
         dbConn.all(queryCheckId, function (err, result) {
             if (err) throw err;
             if (result.length > 0) {
