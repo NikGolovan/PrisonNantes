@@ -33,6 +33,9 @@
                                 <th scope="col"># Ecrou</th>
                                 <th scope="col">Prenom</th>
                                 <th scope="col">Nom</th>
+                                <th scope="col">Date de naissance</th>
+                                <th scope="col">Lieu de naissance</th>
+                                <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -41,6 +44,8 @@
                                     <td><%= data[i].n_ecrou%></td>
                                     <td><%= data[i].prenom%></td>
                                     <td><%= data[i].nom%></td>
+                                    <td><%= data[i].date_naissance%></td>
+                                    <td><%= data[i].lieu_naissance%></td>
                                     <td>
                                         <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
                                         <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
