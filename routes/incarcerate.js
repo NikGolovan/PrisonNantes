@@ -33,10 +33,8 @@ router.post('/', function(req, res, next) {
         nom_juridiction.length === 0 || date_incarceration.length === 0 || n_motif.length === 0) {
 
         errors = true;
-
-        // set flash message
         req.flash('error', "Veuillez saisir tous les champs.");
-        // render to add.ejs with flash message
+
         dbConn.all('SELECT * FROM Incarceration ORDER BY n_ecrou desc', function(err,rows) {
             if(err) {
                 req.flash('error', err);
@@ -54,7 +52,6 @@ router.post('/', function(req, res, next) {
         });
     }
 
-    // if no error
     if(!errors) {
 
         var form_data = {
@@ -71,7 +68,7 @@ router.post('/', function(req, res, next) {
         dbConn.all(queryCheckId, function (err, result) {
             if (err) throw err;
             if (result.length > 0) {
-                // insert query
+
                 dbConn.all(queryInsert, form_data, function (err, result) {
                     if (err) {
                         let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;

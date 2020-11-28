@@ -18,7 +18,6 @@ router.get('/', function(req, res, next) {
     });
 });
 
-// prendre decision
 router.post('/', function(req, res, next) {
     let n_ecrou = req.body.n_ecrou;
     let prenom = req.body.prenom;
@@ -28,10 +27,8 @@ router.post('/', function(req, res, next) {
     if(n_ecrou.length === 0 || prenom.length === 0 || nom.length === 0 ) {
 
         errors = true;
-
-        // set flash message
         req.flash('error', "Veuillez saisir tous les champs.");
-        // render to add.ejs with flash message
+
         dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc', function(err,rows) {
             if(err) {
                 req.flash('error', err);
@@ -47,7 +44,6 @@ router.post('/', function(req, res, next) {
         });
     }
 
-    // if no error
     if(!errors) {
 
         var form_data = {
@@ -56,13 +52,12 @@ router.post('/', function(req, res, next) {
             $nom: nom
         }
 
-        // insert query
         dbConn.all('INSERT INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)', form_data, function(err, result) {
             //if(err) throw err
             if (err) {
                 let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "La decision avec le numéro " + n_ecrou + " déjà existe." : err;
                 req.flash('error', erreurMsg)
-                // render to add.ejs
+
                 dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc', function(err,rows) {
                     if(err) {
                         req.flash('error', err);
