@@ -3,7 +3,6 @@ var router = express.Router();
 var dbConn = require('../lib/db');
 var Detenu = require('../public/javascripts/core/detenu');
 
-// display books page
 router.get('/', function(req, res, next) {
 
   dbConn.all('SELECT * FROM Detenu ORDER BY n_ecrou desc',function(err,rows)     {
@@ -19,9 +18,7 @@ router.get('/', function(req, res, next) {
   });
 });
 
-// display add book page
 router.get('/add', function(req, res, next) {
-  // render to add.ejs
   res.render('pages/add', {
     n_ecrou: '',
     prenom: '',
@@ -36,7 +33,6 @@ router.get('/add', function(req, res, next) {
   })
 })
 
-// add a new book
 router.post('/add', function(req, res, next) {
   const detenu = new Detenu({
     n_ecrou: req.body.n_ecrou,
@@ -83,13 +79,11 @@ router.post('/add', function(req, res, next) {
     $n_motif: detenu["n_motif"],
   }
 
-  // insert query
   dbConn.all('INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)', form_data, function (err, result) {
-    //if(err) throw err
     if (err) {
       let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "Le détenu avec le numéro d'écrou " + detenu["n_ecrou"] + " déjà existe." : err;
       req.flash('error', erreurMsg)
-      // render to add.ejs
+
       res.render('pages/add', {
         n_ecrou: form_data.n_ecrou,
         prenom: form_data.prenom,
@@ -142,7 +136,6 @@ router.post('/add', function(req, res, next) {
   })
 })
 
-// display edit book page
 router.get('/edit/(:n_ecrou)', function(req, res, next) {
 
   let n_ecrou = req.params.n_ecrou;
@@ -194,7 +187,6 @@ router.get('/edit/(:n_ecrou)', function(req, res, next) {
   })
 })
 
-// update book data
 router.post('/update/:n_ecrou', function(req, res, next) {
 
   let n_ecrou = req.params.n_ecrou;
@@ -218,10 +210,8 @@ router.post('/update/:n_ecrou', function(req, res, next) {
       nom.length === 0 || date_naissance.length === 0 || lieu_naissance.length === 0 || n_affaire.length === 0
       || nom_juridiction.length === 0 || date_incarceration.length === 0 || n_motif.length === 0) {
     errors = true;
-
-    // set flash message
     req.flash('error', "Veuillez saisir les modifications.");
-    // render to add.ejs with flash message
+
     res.render('pages/edit', {
       n_ecrou: req.params.n_ecrou,
       nom: nom,
@@ -235,7 +225,6 @@ router.post('/update/:n_ecrou', function(req, res, next) {
     })
   }
 
-  // if no error
   if( !errors ) {
 
     var form_data = {
@@ -248,13 +237,10 @@ router.post('/update/:n_ecrou', function(req, res, next) {
       $date_incarceration: date_incarceration,
       $n_motif: n_motif
     }
-    // update query
+
     dbConn.run("UPDATE Detenu SET prenom = $prenom, nom = $nom, date_naissance = $date_naissance, lieu_naissance = $lieu_naissance WHERE n_ecrou = '" + n_ecrou + "'", form_data, function(err, result) {
-      //if(err) throw err
       if (err) {
-        // set flash message
         req.flash('error', err)
-        // render to edit.ejs
         res.render('pages/edit', {
           n_ecrou: req.params.n_ecrou,
           nom: nom,
@@ -268,11 +254,8 @@ router.post('/update/:n_ecrou', function(req, res, next) {
       }
     })
     dbConn.run("UPDATE Incarceration SET n_affaire = $n_affaire, nom_juridiction = $nom_juridiction, date_incarceration = $date_incarceration, n_motif = $n_motif WHERE n_ecrou = '" + n_ecrou + "'", form_data, function(err, result) {
-      //if(err) throw err
       if (err) {
-        // set flash message
         req.flash('error', err)
-        // render to edit.ejs
         res.render('pages/edit', {
           n_ecrou: req.params.n_ecrou,
           n_affaire: n_affaire,
@@ -288,27 +271,20 @@ router.post('/update/:n_ecrou', function(req, res, next) {
   }
 })
 
-// delete book
 router.get('/delete/(:n_ecrou)', function(req, res, next) {
 
   let n_ecrou = req.params.n_ecrou;
 
   dbConn.all("DELETE FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'", function(err, result) {
-    //if(err) throw err
     if (err) {
-      // set flash message
       req.flash('error', err)
     }
   })
   dbConn.all("DELETE FROM Incarceration WHERE n_ecrou = '" + n_ecrou + "'", function(err, result) {
-    //if(err) throw err
     if (err) {
-      // set flash message
       req.flash('error', err)
     } else {
-      // set flash message
       req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
-      // redirect to books page
       res.redirect('/')
     }
   })
