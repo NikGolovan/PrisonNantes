@@ -20,7 +20,6 @@ router.get('/', function(req, res, next) {
     });
 });
 
-// incarcérer
 router.post('/', function(req, res, next) {
     let n_ecrou = req.body.n_ecrou;
     let n_affaire = req.body.n_affaire;
