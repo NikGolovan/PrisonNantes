@@ -184,9 +184,12 @@ router.post('/update/:n_ecrou', function(req, res, next) {
       $nom: nom,
       $date_naissance: date_naissance,
       $lieu_naissance: lieu_naissance,
-      $n_affaire: n_affaire,
-      $nom_juridiction: nom_juridiction,
+    }
+
+    var form_data1 = {
       $date_incarceration: date_incarceration,
+      $nom_juridiction: nom_juridiction,
+      $n_affaire: n_affaire,
       $n_motif: n_motif
     }
 
@@ -198,14 +201,18 @@ router.post('/update/:n_ecrou', function(req, res, next) {
           nom: nom,
           prenom: prenom,
           date_naissance: date_naissance,
-          lieu_naissance: lieu_naissance
+          lieu_naissance: lieu_naissance,
+          date_incarceration: date_incarceration,
+          nom_juridiction: nom_juridiction,
+          n_affaire: n_affaire,
+          n_motif: n_motif
         })
       } else {
         req.flash('success', 'Les informtions ont été bien mises à jour.');
-        res.redirect('/');
+        //res.redirect('/');
       }
     })
-    dbConn.run("UPDATE Incarceration SET n_affaire = $n_affaire, nom_juridiction = $nom_juridiction, date_incarceration = $date_incarceration, n_motif = $n_motif WHERE n_ecrou = '" + n_ecrou + "'", form_data, function(err, result) {
+    dbConn.run("UPDATE Incarceration SET n_affaire = $n_affaire, nom_juridiction = $nom_juridiction, date_incarceration = $date_incarceration, n_motif = $n_motif WHERE n_ecrou = '" + n_ecrou + "'", form_data1, function(err, result) {
       if (err) {
         req.flash('error', err)
         res.render('pages/edit', {
