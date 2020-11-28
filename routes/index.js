@@ -9,10 +9,8 @@ router.get('/', function(req, res, next) {
 
     if(err) {
       req.flash('error', err);
-      // render to views/books/index.ejs
       res.render('pages',{data:''});
     } else {
-      // render to views/books/index.ejs
       res.render('pages',{data:rows});
     }
   });
