@@ -208,7 +208,7 @@ router.post('/update/:n_ecrou', function(req, res, next) {
           n_motif: n_motif
         })
       } else {
-        req.flash('success', 'Les informtions ont été bien mises à jour.');
+        //req.flash('success', 'Les informtions ont été bien mises à jour.');
         //res.redirect('/');
       }
     })
