@@ -298,13 +298,6 @@ router.get('/delete/(:n_ecrou)', function(req, res, next) {
     if (err) {
       // set flash message
       req.flash('error', err)
-      // redirect to books page
-      res.redirect('/')
-    } else {
-      // set flash message
-      req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
-      // redirect to books page
-      res.redirect('/')
     }
   })
   dbConn.all("DELETE FROM Incarceration WHERE n_ecrou = '" + n_ecrou + "'", function(err, result) {
@@ -312,8 +305,6 @@ router.get('/delete/(:n_ecrou)', function(req, res, next) {
     if (err) {
       // set flash message
       req.flash('error', err)
-      // redirect to books page
-      res.redirect('/')
     } else {
       // set flash message
       req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
