@@ -95,8 +95,7 @@ router.post('/add', function(req, res, next) {
     }
   })
 
-  let queryInsert = "INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)";
-  dbConn.all(queryInsert, form_data, function (err, result) {
+  dbConn.all("INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)", form_data, function (err, result) {
     //if(err) throw err
     if (err) {
       let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "Le détenu avec le numéro d'écrou " + n_ecrou + " déjà existe." : err;
