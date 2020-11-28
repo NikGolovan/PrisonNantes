@@ -59,7 +59,7 @@ router.post('/', function(req, res, next) {
         }
 
         let queryInsert = "INSERT INTO Condamnation values ($n_type_decision, $n_ecrou, $date_decision, $duree)";
-        let queryCheckId = "SELECT \"n_ecrou\" FROM Condamnation WHERE n_ecrou = '" + n_ecrou + "'";
+        let queryCheckId = "SELECT \"n_ecrou\" FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
 
         dbConn.all(queryCheckId, function (err, result) {
             if (err) throw err;
