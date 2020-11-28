@@ -91,10 +91,11 @@ router.post('/', function(req, res, next) {
                 })
             } else {
                 req.flash('error', "Detenu avec le numero " + n_ecrou + " n'existe pas.");
-                res.redirect('/condamner');
+                res.redirect('/condamnation');
                 return;
             }
         })
     }
 })
+
 module.exports = router;
