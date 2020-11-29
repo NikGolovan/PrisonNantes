@@ -110,7 +110,7 @@ router.post('/', function (req, res, next) {
 })
 
 // display edit book page
-router.get('/edit_condamnation/(:n_ecrou)', function (req, res, next) {
+router.get('/edit/(:n_ecrou)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
     let query = "SELECT * FROM Condamnation WHERE n_ecrou = '" + n_ecrou + "'";
 
