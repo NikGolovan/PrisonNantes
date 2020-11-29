@@ -110,7 +110,7 @@ router.post('/', function (req, res, next) {
 })
 
 // display edit book page
-router.get('/edit/(:n_ecrou)', function (req, res, next) {
+router.get('/edit_condamnation/(:n_ecrou)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
     let query = "SELECT * FROM Condamnation WHERE n_ecrou = '" + n_ecrou + "'";
 
@@ -132,7 +132,7 @@ router.get('/edit/(:n_ecrou)', function (req, res, next) {
     })
 })
 
-router.post('/condamnation/update/:n_ecrou', function (req, res, next) {
+router.post('/edit_condamnation/update/:n_ecrou', function (req, res, next) {
     let fields = {
         n_type_decision: req.params.n_type_decision,
         n_ecrou: req.params.n_ecrou,
@@ -141,7 +141,7 @@ router.post('/condamnation/update/:n_ecrou', function (req, res, next) {
     }
 
     if (req.body.canceled) {
-        res.redirect('pages/edit_condamnation');
+        res.redirect('pages/condamner');
         return;
     }
 
