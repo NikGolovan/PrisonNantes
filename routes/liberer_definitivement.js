@@ -20,11 +20,24 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
+    const options = {
+        n_type_decision: req.body.n_type_decision,
+        n_ecrou: req.body.n_ecrou,
+        date_decision: req.body.date_decision,
+        date_liberation: req.body.date_liberation
+    }
+
     let n_type_decision = req.body.n_type_decision;
     let n_ecrou = req.body.n_ecrou;
     let date_decision = req.body.date_decision;
     let date_liberation = req.body.date_liberation;
     let errors = false;
+
+    if (options["date_decision"] > options["date_liberation"]) {
+        req.flash('error', "La date de liberation ne peut pas être inférieure à la date de decision.");
+        res.redirect(req.get('referer'));
+        return;
+    }
 
     if(n_ecrou.length === 0 || n_type_decision.length === 0 ||
         date_decision.length === 0 || date_liberation.length === 0) {

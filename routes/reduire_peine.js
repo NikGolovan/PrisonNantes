@@ -1,14 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var dbConn  = require('../lib/db');
+var dbConn = require('../lib/db');
 
-router.get('/', function(req, res, next) {
-    dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function(err,rows) {
-        if(err) {
+router.get('/', function (req, res, next) {
+    dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function (err, rows) {
+        if (err) {
             req.flash('error', err);
-            res.render('pages/reduire_peine',{data:''});
+            res.render('pages/reduire_peine', {data: ''});
         } else {
-            res.render('pages/reduire_peine',{
+            res.render('pages/reduire_peine', {
                 data: rows,
                 n_type_decision: '',
                 n_ecrou: '',
@@ -19,25 +19,25 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
     let n_type_decision = req.body.n_type_decision;
     let n_ecrou = req.body.n_ecrou;
     let date_decision = req.body.date_decision;
     let duree = req.body.duree;
     let errors = false;
 
-    if(n_ecrou.length === 0 || n_type_decision.length === 0 ||
+    if (n_ecrou.length === 0 || n_type_decision.length === 0 ||
         date_decision.length === 0 || duree.length === 0) {
 
         errors = true;
         req.flash('error', "Veuillez saisir tous les champs.");
 
-        dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function(err,rows) {
-            if(err) {
+        dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function (err, rows) {
+            if (err) {
                 req.flash('error', err);
-                res.render('pages/reduire_peine',{data:''});
+                res.render('pages/reduire_peine', {data: ''});
             } else {
-                res.render('pages/reduire_peine',{
+                res.render('pages/reduire_peine', {
                     data: rows,
                     n_type_decision: n_type_decision,
                     n_ecrou: n_ecrou,
@@ -48,7 +48,7 @@ router.post('/', function(req, res, next) {
         });
     }
 
-    if(!errors) {
+    if (!errors) {
 
         var form_data = {
             $n_type_decision: n_type_decision,
@@ -93,6 +93,10 @@ router.post('/', function(req, res, next) {
                 res.redirect('/reduire');
                 return;
             }
+        })
+        let queryUpdateDuree = "UPDATE Condamnation SET duree = duree - " + duree;
+        dbConn.all(queryUpdateDuree, function (err, result) {
+            if (err) throw err;
         })
     }
 })
