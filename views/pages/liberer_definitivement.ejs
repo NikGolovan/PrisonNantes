@@ -26,22 +26,22 @@
             <% } %>
             <div>
                 <div>
-                    <form action="incarcerate" method="post">
+                    <form action="liberer" method="post">
                         <div class="form-group">
                             <label>Type de decision:</label>
                             <input type="text" class="form-control" name="n_type_decision" value="2" autocomplete="off" readonly>
                         </div>
                         <div class="form-group">
                             <label>Prisonier:</label>
-                            <input type="text" class="form-control" name="n_ecrou" value="<%= n_ecrou %>" autocomplete="off">
+                            <input type="text" class="form-control" name="n_ecrou" value="<%= n_ecrou %>" maxlength="10" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Date de la decision:</label>
-                            <input type="text" class="form-control" name="date_decision" value="<%= date_decision %>" autocomplete="off">
+                            <input type="date" class="form-control" name="date_decision" value="<%= date_decision %>" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Date de la liberation:</label>
-                            <input type="text" class="form-control" name="date_liberation" value="<%= date_liberation %>" autocomplete="off">
+                            <input type="date" class="form-control" name="date_liberation" value="<%= date_liberation %>" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-info" value="Liberer"/>
