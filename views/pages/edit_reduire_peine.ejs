@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Edit Book</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../stylesheets/style.css" />
+</head>
+<body>
+<div class="wrapper"><% include ../webcontent/navbar.html %>
+    <div style="width: 100%" id="content"><% include ../webcontent/header.html %>
+        <% if (messages.error) { %>
+            <div class="alert alert-danger" role="alert"><%- messages.error %></div>
+        <% } %>
+        <div class="navbar navbar-default">
+            <div class="card-body">
+                <form action="/reduire/update/<%= n_ecrou %>" method="post">
+                    <div class="form-group">
+                        <label>Type de decision:</label>
+                        <input type="text" class="form-control" name="n_type_decision" value="1" autocomplete="off" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Prisonier:</label>
+                        <input type="text" class="form-control" name="n_ecrou" value="<%= n_ecrou %>" maxlength="10" autocomplete="off" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Date de la decision:</label>
+                        <input type="date" class="form-control" name="date_decision" value="<%= date_decision %>" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label>Duration:</label>
+                        <input type="text" class="form-control" name="duree" value="<%= duree %>" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-info" value="Mettre à jour"/>
+                        <input type="submit" name="canceled" class="btn btn-info" value="Annuler"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inclure jQuery CDN -->
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<!-- Inclure Bootstrap Js CDN -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- Inclure le fichier webscripts pour la gestion des scripts du site -->
+<script src="../../javascripts/webscripts.js"></script>
+</body>
+</html>
