@@ -148,7 +148,6 @@ router.get('/edit/(:n_ecrou)', function (req, res, next) {
 })
 
 router.post('/update/:n_ecrou', function (req, res, next) {
-
     let n_ecrou = req.params.n_ecrou;
     let prenom = req.body.prenom;
     let nom = req.body.nom;

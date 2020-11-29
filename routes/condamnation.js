@@ -118,7 +118,7 @@ router.get('/edit_condamnation/(:n_ecrou)', function (req, res, next) {
         if (err) throw err
         if (rows.length <= 0) {
             req.flash('error', 'Pas de condamné avec n_ecrou = ' + n_ecrou)
-            res.redirect('/condamner')
+            res.redirect('pages/condamner')
         } else {
             res.render('pages/edit_condamnation', {
                 title: 'Modifier Information',
@@ -132,24 +132,24 @@ router.get('/edit_condamnation/(:n_ecrou)', function (req, res, next) {
     })
 })
 
-router.post('/edit_condamnation/update/:n_ecrou', function (req, res, next) {
+router.post('/update/:n_ecrou', function (req, res, next) {
     let fields = {
-        n_type_decision: req.params.n_type_decision,
         n_ecrou: req.params.n_ecrou,
         date_decision: req.body.date_decision,
         duree: req.body.duree
     }
+    let canceled = req.body.canceled;
+    let errors = false;
 
-    if (req.body.canceled) {
-        res.redirect('pages/condamner');
+    if (canceled) {
+        res.redirect('/condamnation');
         return;
     }
 
     if (!allFieldsAreSet(fields)) {
         errors = true;
         req.flash('error', "Veuillez saisir les modifications.");
-
-        res.render('pages/condamnation', {
+        res.render('pages/edit_condamnation', {
             n_type_decision: req.params.n_type_decision,
             n_ecrou: req.params.n_ecrou,
             date_decision: req.body.date_decision,
@@ -160,23 +160,20 @@ router.post('/edit_condamnation/update/:n_ecrou', function (req, res, next) {
     if (!errors) {
 
         var form_data = {
-            $n_type_decision: req.params.n_type_decision,
-            $n_ecrou: req.params.n_ecrou,
             $date_decision: req.body.date_decision,
             $duree: req.body.duree
         }
 
-        dbConn.run("UPDATE Condamnation SET date_decision = $date_decision, $duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
+        dbConn.run("UPDATE Condamnation SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
             if (err) {
                 req.flash('error', err)
-                res.render('pages/condamnation', {
-                    n_ecrou: req.params.n_ecrou,
+                res.render('pages/edit_condamnation', {
                     date_decision: req.body.date_decision,
                     duree: req.body.duree
                 })
             } else {
                 req.flash('success', 'Les informtions ont été bien mises à jour.');
-                res.redirect('pages/condamnation');
+                res.redirect('/condamnation');
             }
         })
     }
