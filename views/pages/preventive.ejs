@@ -10,8 +10,8 @@
 <body>
 <div class="wrapper"><% include ../webcontent/navbar.html %>
     <div style="width: 100%" id="content"><% include ../webcontent/header.html %>
-        <% if (messages.success) { %>
-            <div class="alert alert-success" role="alert"><%- messages.success %></div>
+        <% if (messages.info) { %>
+            <div class="alert alert-success" role="alert"><%- messages.info %></div>
         <% } %>
         <% if (messages.error) { %>
             <div class="alert alert-danger" role="alert"><%- messages.error %></div>
@@ -35,7 +35,6 @@
                                 <th scope="col">Nom</th>
                                 <th scope="col">Date de naissance</th>
                                 <th scope="col">Lieu de naissance</th>
-                                <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -46,10 +45,6 @@
                                     <td><%= data[i].nom%></td>
                                     <td><%= data[i].date_naissance%></td>
                                     <td><%= data[i].lieu_naissance%></td>
-                                    <td>
-                                        <a class="btn btn-success edit" href="/edit/<%=data[i].n_ecrou%>">Éditer</a>
-                                        <a class="btn btn-danger delete" onclick="return confirm('Are You sure?')" href="/delete/<%=data[i].n_ecrou%>">Supprimer</a>
-                                    </td>
                                 </tr>
                             <% } %>
                             </tbody>

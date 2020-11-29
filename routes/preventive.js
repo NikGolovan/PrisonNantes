@@ -16,6 +16,7 @@ router.get('/', function(req, res, next) {
             });
         }
     });
+    req.flash('info', 'Modification des informations est possible à travers la page d\'accueil.');
 });
 
 router.post('/', function(req, res, next) {
