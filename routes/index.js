@@ -45,14 +45,6 @@ router.post('/add', function(req, res, next) {
     n_motif: req.body.n_motif
   });
 
-  var form_data = {
-    $n_ecrou: detenu["n_ecrou"],
-    $prenom: detenu["prenom"],
-    $nom: detenu["nom"],
-    $date_naissance: detenu["date_naissance"],
-    $lieu_naissance: detenu["lieu_naissance"]
-  }
-
   if (req.body.canceled) {
     res.redirect('/');
     return;
