@@ -94,7 +94,7 @@ router.post('/', function (req, res, next) {
                 return;
             }
         })
-        let queryUpdateDuree = "UPDATE Condamnation SET duree = duree - " + duree + " WHERE n_ecrou = " + n_ecrou;
+        let queryUpdateDuree = "UPDATE Condamnation SET duree = duree - " + duree + " WHERE n_ecrou = '" + n_ecrou + "'";
         dbConn.all(queryUpdateDuree, function (err, result) {
             if (err) throw err;
         })
