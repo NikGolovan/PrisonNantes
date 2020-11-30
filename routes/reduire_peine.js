@@ -167,6 +167,10 @@ router.post('/update/:n_ecrou', function (req, res, next) {
                 res.redirect('/reduire');
             }
         })
+        let queryUpdateDuree = "UPDATE Condamnation SET duree = duree + " + fields["duree"] + " WHERE n_ecrou = '" + fields["n_ecrou"] + "'";
+        dbConn.all(queryUpdateDuree, function (err, result) {
+            if (err) throw err;
+        })
     }
 })
 

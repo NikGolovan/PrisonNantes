@@ -158,6 +158,17 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         })
     }
 
+    if (fields["date_decision"] > fields["date_liberation"]) {
+        req.flash('error', "Date de decision doit être inférieure a la date de liberation.");
+        res.render('pages/edit_liberation', {
+            n_type_decision: req.params.n_type_decision,
+            n_ecrou: req.params.n_ecrou,
+            date_decision: req.body.date_decision,
+            date_liberation: req.body.date_liberation
+        })
+        return;
+    }
+
     if (!errors) {
         var form_data = {
             $date_decision: req.body.date_decision,
