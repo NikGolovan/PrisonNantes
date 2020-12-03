@@ -179,6 +179,24 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     }
 })
 
+router.get('/delete/(:n_ecrou)', function (req, res, next) {
+    let n_ecrou = req.params.n_ecrou;
+    let query = "PRAGMA foreign_keys=ON;\n" +
+        "BEGIN TRANSACTION;\n" +
+        "DELETE FROM Decision where n_ecrou = '" + n_ecrou + "';\n" +
+        "COMMIT;\n" +
+        "PRAGMA foreign_keys=OFF;"
+
+    dbConn.all("DELETE FROM Decision where n_ecrou = '" + n_ecrou + "'", function (err, result) {
+        if (err) {
+            req.flash('error', err)
+        } else {
+            req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
+            res.redirect('/condamnation')
+        }
+    })
+})
+
 function allFieldsAreSet(fields) {
     for (let key in fields) {
         if (fields[key].length === 0)

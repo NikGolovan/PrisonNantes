@@ -69,6 +69,7 @@
                                     <td><%= data[i].duree%></td>
                                     <td>
                                         <a class="btn btn-success edit" href="condamnation/edit/<%=data[i].n_ecrou%>">Éditer</a>
+                                        <a class="btn btn-danger delete" onclick="return confirm('Supprimer détenu avec le numéro d\'écrou <%=data[i].n_ecrou%> ?')" href="condamnation/delete/<%=data[i].n_ecrou%>">Supprimer</a>
                                     </td>
                                 </tr>
                             <% } %>
