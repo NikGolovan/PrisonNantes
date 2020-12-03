@@ -108,7 +108,7 @@ router.post('/add', function (req, res, next) {
     dbConn.all('INSERT OR IGNORE INTO Affaire values ($n_affaire, $nom_juridiction, $date_incarceration)', form_data_affaire, function (err, result) {
         if (err) {
             console.log("ERROR IN Affaire")
-            return;
+            throw err;
         }
     })
     dbConn.all('INSERT OR IGNORE INTO Motif values ($n_motif, $libelle_motif)', form_data_motif, function (err, result) {
@@ -119,9 +119,9 @@ router.post('/add', function (req, res, next) {
     })
 
     dbConn.all("INSERT INTO Detenu_Affaire (n_ecrou, n_affaire, nom_juridiction) " +
-        "SELECT Detenu.n_ecrou, Affaire.n_affaire, Affaire.nom_juridiction " +
+        "SELECT Detenu.\"n_ecrou\", Affaire.\"n_affaire\", Affaire.\"nom_juridiction\" " +
         "FROM Detenu, Affaire " +
-        "WHERE Detenu.n_ecrou = '" + req.body.n_ecrou + "' AND Affaire.n_affaire = '" + req.body.n_affaire + "'", function (err, result) {
+        "WHERE Detenu.\"n_ecrou\" = '" + req.body.n_ecrou + "' AND Affaire.\"n_affaire\" = '" + req.body.n_affaire + "'", function (err, result) {
         if (err) {
             console.log("ERROR IN Detenu_Affaire: " + err);
             throw err
@@ -136,8 +136,8 @@ router.post('/add', function (req, res, next) {
             console.log("ERROR IN Incarceration: " + err);
             throw err
         } else {
-            dbConn.run("UPDATE Incarceration SET date_incarceration = $date_incarceration WHERE n_ecrou = '" + req.body.n_ecrou + "'", form_data1, function (err, result) {
-              if (err) throw err;
+            dbConn.run("UPDATE Incarceration SET date_incarceration = $date_incarceration WHERE n_ecrou = " + req.body.n_ecrou, form_data1, function (err, result) {
+                if (err) throw err;
             })
         }
     })
