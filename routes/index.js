@@ -86,13 +86,52 @@ router.post('/add', function (req, res, next) {
         $n_motif: req.body.n_motif
     }
 
-    // insert query
+    var form_data_affaire = {
+        $n_affaire: req.body.n_affaire,
+        $nom_juridiction: req.body.nom_juridiction,
+        $date_incarceration: req.body.date_incarceration,
+    }
+
+    var form_data_detenu_affaire = {
+        $n_ecrou: req.body.n_ecrou,
+        $n_affaire: req.body.n_affaire,
+        $nom_juridiction: req.body.nom_juridiction,
+    }
+
+    var form_data_motif = {
+        $n_motif: req.body.n_motif,
+        $libelle_motif: req.body.nom_juridiction
+    }
+
     dbConn.all('INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)', form_data, function (err, result) {
-        if (err) throw err
+        if (err) {
+            console.log("ERROR Detenu");
+            throw err
+        }
     })
-    dbConn.all('INSERT INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)', form_data1, function (err, result) {
-        if (err) throw err
+    dbConn.all('INSERT INTO Affaire values ($n_affaire, $nom_juridiction, $date_incarceration)', form_data_affaire, function (err, result) {
+        if (err) {
+            console.log("ERROR IN Affaire")
+            callback(err);
+            return;
+        }
     })
+    dbConn.all('INSERT INTO Motif values ($n_motif, $libelle_motif)', form_data_motif, function (err, result) {
+        if (err) {
+            console.log("ERROR IN Motif");
+            throw err
+        }
+    })
+    dbConn.all('INSERT INTO Detenu_Affaire ($n_ecrou, $n_affaire, $nom_juridiction)', form_data_detenu_affaire, function (err, result) {
+        if (err) {
+            console.log("ERROR IN Detenu_Affaire: " + err);
+            throw err
+        }
+    })
+    /*    dbConn.all('INSERT OR IGNORE INTO Incarceration values ($n_ecrou, $n_affaire, $nom_juridiction, $date_incarceration, $n_motif)', form_data1, function (err, result) {
+            if (err) console.log("ERROR IN Incarceration: " + err);
+            throw err
+        })*/
     res.redirect('/');
 })
 
