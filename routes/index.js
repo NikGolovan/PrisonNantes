@@ -88,12 +88,6 @@ router.post('/add', function (req, res, next) {
         $date_incarceration: req.body.date_incarceration,
     }
 
-    var form_data_detenu_affaire = {
-        $n_ecrou: req.body.n_ecrou,
-        $n_affaire: req.body.n_affaire,
-        $nom_juridiction: req.body.nom_juridiction,
-    }
-
     var form_data_motif = {
         $n_motif: req.body.n_motif,
         $libelle_motif: req.body.nom_juridiction
@@ -129,14 +123,14 @@ router.post('/add', function (req, res, next) {
     })
 
     dbConn.all("INSERT INTO Incarceration (n_ecrou, n_affaire, nom_juridiction, n_motif) " +
-        "SELECT Detenu_Affaire.n_ecrou, Detenu_Affaire.n_affaire, Detenu_Affaire.nom_juridiction, Motif.n_motif " +
+        "SELECT Detenu_Affaire.\"n_ecrou\", Detenu_Affaire.\"n_affaire\", Detenu_Affaire.\"nom_juridiction\", Motif.\"n_motif\" " +
         "FROM Detenu_Affaire, Motif " +
-        "WHERE Detenu_Affaire.n_ecrou = '" + req.body.n_ecrou + "' AND Motif.n_motif = '" + req.body.n_motif + "'", function (err, result) {
+        "WHERE Detenu_Affaire.\"n_ecrou\" = '" + req.body.n_ecrou + "' AND Motif.\"n_motif\" = '" + req.body.n_motif + "'", function (err, result) {
         if (err) {
             console.log("ERROR IN Incarceration: " + err);
             throw err
         } else {
-            dbConn.run("UPDATE Incarceration SET date_incarceration = $date_incarceration WHERE n_ecrou = " + req.body.n_ecrou, form_data1, function (err, result) {
+            dbConn.run("UPDATE Incarceration SET date_incarceration = $date_incarceration WHERE \"n_ecrou\" = '" + req.body.n_ecrou + "'", form_data1, function (err, result) {
                 if (err) throw err;
             })
         }
