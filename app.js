@@ -7,7 +7,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var condamnationRouter = require('./routes/condamnation');
 var reduireRouter = require('./routes/reduire_peine');
 var libererRouter = require('./routes/liberer_definitivement');
@@ -36,7 +35,6 @@ app.use(session({
 app.use(flash());
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/condamnation', condamnationRouter);
 app.use('/reduire', reduireRouter);
 app.use('/liberer', libererRouter);

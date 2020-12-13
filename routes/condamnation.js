@@ -70,15 +70,15 @@ router.post('/', function (req, res, next) {
 
         dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
             if (err) throw err;
-            console.log(result)
         })
+
         dbConn.all(queryCheckId, function (err, result) {
             if (err) throw err;
             if (result.length > 0) {
                 // insert query
                 dbConn.all(queryInsert, form_data, function (err, result) {
                     if (err) {
-                        let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
+                        let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " a été déjà condamné." : err;
                         req.flash('error', erreurMsg)
 
                         dbConn.all('SELECT * FROM Condamnation ORDER BY n_ecrou desc', function (err, rows) {
@@ -138,16 +138,13 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         date_decision: req.body.date_decision,
         duree: req.body.duree
     }
-    let canceled = req.body.canceled;
-    let errors = false;
 
-    if (canceled) {
+    if (req.body.canceled) {
         res.redirect('/condamnation');
         return;
     }
 
     if (!allFieldsAreSet(fields)) {
-        errors = true;
         req.flash('error', "Veuillez saisir les modifications.");
         res.render('pages/edit_condamnation', {
             n_type_decision: req.params.n_type_decision,
@@ -157,44 +154,35 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         })
     }
 
-    if (!errors) {
-
-        var form_data = {
-            $date_decision: req.body.date_decision,
-            $duree: req.body.duree
-        }
-
-        dbConn.run("UPDATE Condamnation SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
-            if (err) {
-                req.flash('error', err)
-                res.render('pages/edit_condamnation', {
-                    date_decision: req.body.date_decision,
-                    duree: req.body.duree
-                })
-            } else {
-                req.flash('success', 'Les informtions ont été bien mises à jour.');
-                res.redirect('/condamnation');
-            }
-        })
+    var form_data = {
+        $date_decision: req.body.date_decision,
+        $duree: req.body.duree
     }
+
+    dbConn.run("UPDATE Condamnation SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
+        if (err) {
+            req.flash('error', err)
+            res.render('pages/edit_condamnation', {
+                date_decision: req.body.date_decision,
+                duree: req.body.duree
+            })
+        } else {
+            req.flash('success', 'Les informtions ont été bien mises à jour.');
+            res.redirect('/condamnation');
+        }
+    })
 })
 
 router.get('/delete/(:n_ecrou)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
-    let query = "PRAGMA foreign_keys=ON;\n" +
-        "BEGIN TRANSACTION;\n" +
-        "DELETE FROM Decision where n_ecrou = '" + n_ecrou + "';\n" +
-        "COMMIT;\n" +
-        "PRAGMA foreign_keys=OFF;"
-
     dbConn.all("DELETE FROM Decision where n_ecrou = '" + n_ecrou + "'", function (err, result) {
         if (err) {
             req.flash('error', err)
         } else {
             req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
-            res.redirect('/condamnation')
         }
     })
+    res.redirect('/condamnation')
 })
 
 function allFieldsAreSet(fields) {
