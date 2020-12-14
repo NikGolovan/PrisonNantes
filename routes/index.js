@@ -47,9 +47,10 @@ router.post('/add', function (req, res, next) {
         nom_juridiction: req.body.nom_juridiction,
         n_affaire: req.body.n_affaire,
         n_motif: req.body.n_motif,
-        libelle_motif: req.body.libelle_motif
+        libelle_motif: req.body.libelle_motif,
     }
 
+    /* l'instance du detenu */
     let detenu = new Detenu({
         n_ecrou: req.body.n_ecrou,
         prenom: req.body.prenom,
@@ -57,6 +58,13 @@ router.post('/add', function (req, res, next) {
         date_naissance: req.body.date_naissance,
         lieu_naissance: req.body.lieu_naissance,
     });
+
+    /* l'instance du motif */
+    let motif = new Motif({
+        n_motif: req.body.n_motif,
+        libelle_motif: req.body.nom_juridiction
+    });
+
 
     if (req.body.canceled) {
         res.redirect('/');
@@ -75,28 +83,11 @@ router.post('/add', function (req, res, next) {
         return;
     }
 
-    var form_data = {
-        $n_ecrou: detenu["n_ecrou"],
-        $prenom: detenu["prenom"],
-        $nom: detenu["nom"],
-        $date_naissance: detenu["date_naissance"],
-        $lieu_naissance: detenu["lieu_naissance"],
-    }
-
-    var form_data1 = {
-        $date_incarceration: req.body.date_incarceration,
-    }
-
-    var form_data_affaire = {
-        $n_affaire: req.body.n_affaire,
-        $nom_juridiction: req.body.nom_juridiction,
-        $date_incarceration: req.body.date_incarceration,
-    }
-
-    var form_data_motif = {
-        $n_motif: req.body.n_motif,
-        $libelle_motif: req.body.nom_juridiction
-    }
+    let affaire = new Affaire({
+        n_affaire: req.body.n_affaire,
+        nom_juridiction: req.body.nom_juridiction,
+        date_incarceration: req.body.date_incarceration
+    });
 
     /* création du tableau des commandes pour exécution batch du SQL */
     let arr = [
@@ -114,13 +105,14 @@ router.post('/add', function (req, res, next) {
         "FROM Detenu_Affaire, Motif " +
         "WHERE Detenu_Affaire.n_ecrou = '" + req.body.n_ecrou + "' AND Motif.n_motif = '" + req.body.n_motif + "'",
 
-        "UPDATE Incarceration SET date_incarceration = $date_incarceration WHERE n_ecrou = '" + req.body.n_ecrou + "'"
+        "UPDATE Incarceration SET date_incarceration = '" + req.body.date_incarceration + "' WHERE n_ecrou = '" + req.body.n_ecrou + "'"
     ]
     /* création du tableau des données pour exécution batch du SQL */
-    let data = [form_data, form_data_affaire, form_data_motif, null, null, form_data1];
+    let data = [detenu, affaire, motif, null, null, null];
 
     /* exécution du batch et affichage du résultat */
     console.log("\x1b[34m", "[INFO] ==> Incarcération du détenu avec le numéro " + req.body.n_ecrou + " ...");
+
     executeBatch(req, res, arr, data);
     console.log("\x1b[34m", "[INFO] ==> Nouveau détenu a été bien incarcéré.");
     res.redirect('/');
@@ -165,28 +157,10 @@ function handleError(req, res, ex) {
 /* initialiser la page de modification des informations */
 router.get('/edit/(:n_ecrou)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
-
-    dbConn.all("SELECT * FROM Detenu deten1, Incarceration incr1 WHERE 'deten1." + n_ecrou + "' = incr1.n_ecrou UNION SELECT * FROM Detenu deten2, Incarceration incr2 WHERE deten2.n_ecrou = incr2.n_ecrou", function (err, rows, fields) {
+    let query = "SELECT * FROM Detenu d JOIN Incarceration incr1 ON d.n_ecrou = incr1.n_ecrou AND d.n_ecrou = '" + n_ecrou + "'";
+    dbConn.all(query, function (err, rows) {
         if (err) throw err
-        if (rows.length <= 0) {
-            req.flash('error', 'Pas de détenu avec n_ecrou = ' + n_ecrou)
-            res.redirect('/')
-        } else {
-            // render to edit.ejs
-            res.render('pages/edit', {
-                title: 'Modifier Information',
-                n_ecrou: rows[0].n_ecrou,
-                prenom: rows[0].prenom,
-                nom: rows[0].nom,
-                date_naissance: rows[0].date_naissance,
-                lieu_naissance: rows[0].lieu_naissance,
-                date_incarceration: rows[0].date_incarceration,
-                nom_juridiction: rows[0].nom_juridiction,
-                n_affaire: rows[0].n_affaire,
-                n_motif: rows[0].n_motif,
-                canceled: ''
-            })
-        }
+        res.render('pages/edit', rows[0])
     })
 })
 
@@ -198,6 +172,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         nom: req.body.nom,
         date_naissance: req.body.date_naissance,
         lieu_naissance: req.body.lieu_naissance,
+        date_incarceration: req.body.date_incarceration
     }
 
     if (req.body.canceled) {
@@ -214,14 +189,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     /* vérifier si les champs sont vides */
     if (!allFieldsAreSet(options)) {
         req.flash('error', "Veuillez saisir les modifications.");
-        res.render('pages/edit', {
-            n_ecrou: req.params.n_ecrou,
-            nom: req.body.nom,
-            prenom: req.body.prenom,
-            date_naissance: req.body.date_naissance,
-            lieu_naissance: req.body.lieu_naissance,
-            date_incarceration: req.body.date_incarceration,
-        })
+        res.render('pages/edit', options)
         return;
     }
 
