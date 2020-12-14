@@ -19,6 +19,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/* créer nouvelle réduction de peine */
 router.post('/', function (req, res, next) {
     let n_type_decision = req.body.n_type_decision;
     let n_ecrou = req.body.n_ecrou;
@@ -65,21 +66,18 @@ router.post('/', function (req, res, next) {
 
         let queryInsert = "INSERT INTO Reduction_peine values ($n_type_decision, $n_ecrou, $date_decision, $duree)";
         let queryCheckId = "SELECT \"n_ecrou\" FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
-        let queryInsertDecision = "INSERT INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
-
-        dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
-            if (err) throw err;
-        })
+        let queryInsertDecision = "INSERT OR IGNORE INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
 
         dbConn.all(queryCheckId, function (err, result) {
             if (err) throw err;
+            dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
+            })
             if (result.length > 0) {
                 // insert query
                 dbConn.all(queryInsert, form_data, function (err, result) {
                     if (err) {
                         let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
                         req.flash('error', erreurMsg)
-
                         dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function (err, rows) {
                             if (err) {
                                 req.flash('error', err);
@@ -112,45 +110,33 @@ router.post('/', function (req, res, next) {
     }
 })
 
-// display edit book page
+/* afficher la page de modification des informations */
 router.get('/edit/(:n_ecrou)', function (req, res, next) {
-    let n_ecrou = req.params.n_ecrou;
-    let query = "SELECT * FROM Reduction_peine WHERE n_ecrou = '" + n_ecrou + "'";
-
-    dbConn.all(query, function (err, rows, fields) {
+    dbConn.all("SELECT * FROM Reduction_peine WHERE n_ecrou = '" + req.params.n_ecrou + "'", function (err, rows, fields) {
         if (err) throw err
         if (rows.length <= 0) {
             req.flash('error', 'Pas de condamné avec n_ecrou = ' + n_ecrou)
             res.redirect('pages/reduire')
         } else {
-            res.render('pages/edit_reduire_peine', {
-                title: 'Modifier Information',
-                n_type_decision: rows[0].n_type_decision,
-                n_ecrou: rows[0].n_ecrou,
-                date_decision: rows[0].date_decision,
-                duree: rows[0].duree,
-                canceled: ''
-            })
+            res.render('pages/edit_reduire_peine', rows[0])
         }
     })
 })
 
+/* mettre à jour les information concernant réduction de peine */
 router.post('/update/:n_ecrou', function (req, res, next) {
     let fields = {
         n_ecrou: req.params.n_ecrou,
         date_decision: req.body.date_decision,
         duree: req.body.duree
     }
-    let canceled = req.body.canceled;
-    let errors = false;
 
-    if (canceled) {
+    if (req.body.canceled) {
         res.redirect('/reduire');
         return;
     }
 
     if (!allFieldsAreSet(fields)) {
-        errors = true;
         req.flash('error', "Veuillez saisir les modifications.");
         res.render('pages/edit_reduire_peine', {
             n_type_decision: req.params.n_type_decision,
@@ -160,29 +146,27 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         })
     }
 
-    if (!errors) {
-        var form_data = {
-            $date_decision: req.body.date_decision,
-            $duree: req.body.duree
-        }
-
-        dbConn.run("UPDATE Reduction_peine SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
-            if (err) {
-                req.flash('error', err)
-                res.render('pages/edit_reduire_peine', {
-                    date_decision: req.body.date_decision,
-                    duree: req.body.duree
-                })
-            } else {
-                req.flash('success', 'Les informtions ont été bien mises à jour.');
-                res.redirect('/reduire');
-            }
-        })
-        let queryUpdateDuree = "UPDATE Condamnation SET duree = duree + " + fields["duree"] + " WHERE n_ecrou = '" + fields["n_ecrou"] + "'";
-        dbConn.all(queryUpdateDuree, function (err, result) {
-            if (err) throw err;
-        })
+    var form_data = {
+        $date_decision: req.body.date_decision,
+        $duree: req.body.duree
     }
+
+    dbConn.run("UPDATE Reduction_peine SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
+        if (err) {
+            req.flash('error', err)
+            res.render('pages/edit_reduire_peine', {
+                date_decision: req.body.date_decision,
+                duree: req.body.duree
+            })
+        } else {
+            req.flash('success', 'Les informtions ont été bien mises à jour.');
+            res.redirect('/reduire');
+        }
+    })
+    let queryUpdateDuree = "UPDATE Condamnation SET duree = duree + " + fields["duree"] + " WHERE n_ecrou = '" + fields["n_ecrou"] + "'";
+    dbConn.all(queryUpdateDuree, function (err) {
+        if (err) throw err;
+    })
 })
 
 function allFieldsAreSet(fields) {

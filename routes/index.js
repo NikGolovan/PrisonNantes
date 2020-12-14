@@ -4,9 +4,12 @@ var dbConn = require('../lib/db');
 var Detenu = require('../public/javascripts/core/detenu');
 var Affaire = require('../public/javascripts/core/affaire');
 var Motif = require('../public/javascripts/core/motif');
-var Incarceration = require('../public/javascripts/core/incarceration');
+const Logger = require("../public/javascripts/core/logger");
 
-/* initializer la page */
+/* definition de logger */
+let logger = new Logger();
+
+/* initializer la page d'accueil */
 router.get('/', function (req, res, next) {
     dbConn.all('SELECT * FROM Detenu INNER JOIN Incarceration ON Detenu.n_ecrou = Incarceration.n_ecrou ORDER BY n_ecrou desc', function (err, rows) {
         if (err) {
@@ -112,10 +115,9 @@ router.post('/add', function (req, res, next) {
     let data = [detenu, affaire, motif, null, null, null];
 
     /* exécution du batch et affichage du résultat */
-    console.log("\x1b[34m", "[INFO] ==> Incarcération du détenu avec le numéro " + req.body.n_ecrou + " ...");
-
+    logger.infoCreateDetenu(req.body.n_ecrou);
     executeBatch(req, res, arr, data);
-    console.log("\x1b[34m", "[INFO] ==> Nouveau détenu a été bien incarcéré.");
+    logger.infoIncarcerationSuccess();
     res.redirect('/');
 })
 
@@ -131,7 +133,7 @@ function executeBatch(req, res, queries, form) {
     dbConn.serialize(() => {
         dbConn.run('BEGIN TRANSACTION;');
         queries.forEach((query, index) => {
-            console.log("\x1b[34m", "[INFO] ==> Execution du batch... traitement de la requête SQL [" + index + "]");
+            logger.infoBatchExecution(index);
             let data = form[index]
             if (data !== null && data !== 'undefined') {
                 /* si les données ne sont pas vides, alors exécuter les requêtes comprenant les données */
@@ -146,7 +148,7 @@ function executeBatch(req, res, queries, form) {
             }
         })
     })
-    console.log("\x1b[34m", "[INFO] ==> Validation des modifications...");
+    logger.infoValidationOfModifications();
     dbConn.run("COMMIT");
 }
 
@@ -207,17 +209,17 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     ]
 
     let data = [form_data, null];
-    console.log("\x1b[34m", "[INFO] ==> Mise à jour des informations pour l'incarcéré numéro " + req.params.n_ecrou + "...");
+    logger.infoUpdateQuery(" pour l'incarcéré numéro " + req.params.n_ecrou + "...");
     executeBatch(req, res, arr, data);
     req.flash('success', 'Les informtions ont été bien mises à jour.');
-    console.log("\x1b[34m", "[INFO] ==> Les modifications ont été bien prises en compte.");
+    logger.infoUpdateSuccess();
     res.redirect('/');
 })
 
 router.get('/delete/(:n_ecrou)', function (req, res, next) {
     /* prendre n_ecrou du détenu */
     let n_ecrou = req.params.n_ecrou;
-    console.log("\x1b[34m", "[INFO] ==> Suppression des données liés au détenu " + n_ecrou + " ...");
+    logger.infoDelete("liés au détenu " + n_ecrou + " ...");
     /* création du tableau des commandes pour exécution batch du SQL */
     let arr = [
         "DELETE FROM Incarceration WHERE n_ecrou = '" + n_ecrou + "'",
@@ -228,7 +230,7 @@ router.get('/delete/(:n_ecrou)', function (req, res, next) {
     executeBatch(req, res, arr, [null, null, null, null]);
     /* affichage du résultat */
     req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
-    console.log("\x1b[34m", "[INFO] ==> Les données ont été bien supprimées.");
+    logger.infoDeleteSuccess();
     res.redirect('/')
 })
 
