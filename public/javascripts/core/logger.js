@@ -59,12 +59,30 @@ const Logger = function () {
     }
 
     /*
-        Affichage d'information sur la création d'un nouveau incarcéré .
+        Affichage d'information sur la création d'un nouveau incarcéré.
         @param: {String} param - le numéro d'incarcéré
     */
     this.infoCreateDetenu = function (param) {
-        param = (param === null) ? "(?)" : param;
+        param = (param === null) ? " " : param;
         console.log(prefix, "[INFO] ==> Incarcération du détenu avec le numéro " + param + " ...");
+    }
+
+    /*
+        Affichage d'information sur la création d'une nouvelle réduction de peine.
+        @param: {String} param - le numéro de condamné
+    */
+    this.infoCreateReductionPeine = function (param) {
+        param = (param === null) ? " " : param;
+        console.log(prefix, "[INFO] ==> Insertion d'une nouvelle reduction de peine pour condamné " + param);
+    }
+
+    /*
+        Affichage d'information sur la création d'une nouvelle réduction de peine.
+        @param: {String} param - le numéro de condamné
+    */
+    this.infoReductionPeineSuccess = function (param) {
+        param = (param === null) ? " " : param;
+        console.log(prefix, "[INFO] ==> La peine pour condamné " + param + " a été bien réduite.");
     }
 }
 

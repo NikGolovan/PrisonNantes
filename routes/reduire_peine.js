@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var dbConn = require('../lib/db');
+const Logger = require("../public/javascripts/core/logger");
+
+/* definition de logger */
+let logger = new Logger();
 
 router.get('/', function (req, res, next) {
     dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function (err, rows) {
@@ -68,6 +72,8 @@ router.post('/', function (req, res, next) {
         let queryCheckId = "SELECT \"n_ecrou\" FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
         let queryInsertDecision = "INSERT OR IGNORE INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
 
+        logger.infoCreateReductionPeine(req.body.n_ecrou);
+        logger.infoExecQuery();
         dbConn.all(queryCheckId, function (err, result) {
             if (err) throw err;
             dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
@@ -107,6 +113,7 @@ router.post('/', function (req, res, next) {
         dbConn.all(queryUpdateDuree, function (err, result) {
             if (err) throw err;
         })
+        logger.infoReductionPeineSuccess(req.body.n_ecrou);
     }
 })
 
@@ -150,7 +157,8 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         $date_decision: req.body.date_decision,
         $duree: req.body.duree
     }
-
+    logger.infoUpdateQuery(" concernant réduction de peine pour condamné " + req.params.n_ecrou);
+    logger.infoExecQuery();
     dbConn.run("UPDATE Reduction_peine SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
         if (err) {
             req.flash('error', err)
@@ -159,7 +167,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
                 duree: req.body.duree
             })
         } else {
-            req.flash('success', 'Les informtions ont été bien mises à jour.');
+            req.flash('success', 'Les informations ont été bien mises à jour.');
             res.redirect('/reduire');
         }
     })
@@ -167,6 +175,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     dbConn.all(queryUpdateDuree, function (err) {
         if (err) throw err;
     })
+    logger.infoUpdateSuccess();
 })
 
 function allFieldsAreSet(fields) {
