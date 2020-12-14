@@ -65,6 +65,12 @@ router.post('/add', function (req, res, next) {
         libelle_motif: req.body.nom_juridiction
     });
 
+    /* l'instance de l'affaire */
+    let affaire = new Affaire({
+        n_affaire: req.body.n_affaire,
+        nom_juridiction: req.body.nom_juridiction,
+        date_incarceration: req.body.date_incarceration
+    });
 
     if (req.body.canceled) {
         res.redirect('/');
@@ -82,12 +88,6 @@ router.post('/add', function (req, res, next) {
         res.render('pages/add', options);
         return;
     }
-
-    let affaire = new Affaire({
-        n_affaire: req.body.n_affaire,
-        nom_juridiction: req.body.nom_juridiction,
-        date_incarceration: req.body.date_incarceration
-    });
 
     /* création du tableau des commandes pour exécution batch du SQL */
     let arr = [
@@ -107,6 +107,7 @@ router.post('/add', function (req, res, next) {
 
         "UPDATE Incarceration SET date_incarceration = '" + req.body.date_incarceration + "' WHERE n_ecrou = '" + req.body.n_ecrou + "'"
     ]
+
     /* création du tableau des données pour exécution batch du SQL */
     let data = [detenu, affaire, motif, null, null, null];
 
