@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var dbConn = require('../lib/db');
-var Detenu = require('../public/javascripts/core/detenu');
-var Affaire = require('../public/javascripts/core/affaire');
-var Motif = require('../public/javascripts/core/motif');
-const Logger = require("../public/javascripts/core/logger");
+var Detenu = require('../public/javascripts/core/classes/detenu');
+var Affaire = require('../public/javascripts/core/classes/affaire');
+var Motif = require('../public/javascripts/core/classes/motif');
+const Logger = require("../public/javascripts/core/logger/logger");
 
 /* Définition de logger */
 let logger = new Logger();

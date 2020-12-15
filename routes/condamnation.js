@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var dbConn = require('../lib/db');
-const Logger = require("../public/javascripts/core/logger");
+const Logger = require("../public/javascripts/core/logger/logger");
 
 /* Definition de logger */
 let logger = new Logger();
