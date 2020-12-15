@@ -80,13 +80,12 @@ router.post('/', function(req, res, next) {
         let queryCheckId = "SELECT \"n_ecrou\" FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
         let queryInsertDecision = "INSERT INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
 
-        dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
-            if (err) throw err;
-        })
-
         dbConn.all(queryCheckId, function (err, result) {
             if (err) throw err;
             if (result.length > 0) {
+                dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
+                    if (err) throw err;
+                })
                 // insert query
                 dbConn.all(queryInsert, form_data, function (err, result) {
                     if (err) {
