@@ -40,6 +40,7 @@ router.get('/add', function (req, res, next) {
 
 /* Incarcérer le détenu */
 router.post('/add', function (req, res, next) {
+    let queryCheckDetenu = "SELECT n_ecrou FROM Detenu WHERE n_ecrou = '" + req.body.n_ecrou + "'";
     const options = {
         n_ecrou: req.body.n_ecrou,
         prenom: req.body.prenom,
@@ -114,11 +115,19 @@ router.post('/add', function (req, res, next) {
     /* création du tableau des données pour exécution batch du SQL */
     let data = [detenu, affaire, motif, null, null, null];
 
-    /* exécution du batch et affichage du résultat */
-    logger.infoCreateDetenu(req.body.n_ecrou);
-    executeBatch(req, res, arr, data);
-    logger.infoIncarcerationSuccess();
-    res.redirect('/');
+    checkIncarceration(queryCheckDetenu, function (err, result) {
+        if (err) throw err;
+        if (result > 0) {
+            req.flash('error', "L'incarcéré avec le numéro " + req.body.n_ecrou + " existe déjà.");
+            res.render('pages/add', options);
+        } else {
+            /* exécution du batch et affichage du résultat */
+            logger.infoCreateDetenu(req.body.n_ecrou);
+            executeBatch(req, res, arr, data);
+            logger.infoIncarcerationSuccess();
+            res.redirect('/');
+        }
+    });
 })
 
 /*
@@ -150,6 +159,19 @@ function executeBatch(req, res, queries, form) {
         dbConn.run("COMMIT");
     })
     logger.infoValidationOfModifications();
+}
+
+/*
+    Cette fonction permet de savoir si le détenu a a été déjà incarcéré
+    @param: {String} query - la requête SQL
+    @param: {Fonction} callback - fonction qui retourne le résultat
+    @return: {Fonction} callback
+ */
+function checkIncarceration (query, callback) {
+    dbConn.all(query, function (err, result) {
+        if (err) return callback(err);
+        callback(null, result.length);
+    });
 }
 
 function handleError(req, res, ex) {
