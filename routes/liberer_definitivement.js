@@ -34,7 +34,7 @@ router.post('/', function(req, res, next) {
     let errors = false;
 
     if (options["date_decision"] > options["date_liberation"]) {
-        req.flash('error', "La date de liberation ne peut pas être inférieure à la date de decision.");
+        req.flash('error', "La date de libération ne peut pas être inférieure à la date de decision.");
         res.redirect(req.get('referer'));
         return;
     }
@@ -108,12 +108,12 @@ router.post('/', function(req, res, next) {
                             }
                         });
                     } else {
-                        req.flash('success', 'Une nouvelle liberation a été bien enregistré.');
+                        req.flash('success', 'Une nouvelle libération a été bien enregistré.');
                         res.redirect(req.get('referer'));
                     }
                 })
             } else {
-                req.flash('error', "Detenu avec le numero " + n_ecrou + " n'existe pas.");
+                req.flash('error', "Détenu avec le numero " + n_ecrou + " n'existe pas.");
                 res.redirect('/liberer');
                 return;
             }
@@ -170,7 +170,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     }
 
     if (fields["date_decision"] > fields["date_liberation"]) {
-        req.flash('error', "Date de decision doit être inférieure a la date de liberation.");
+        req.flash('error', "Date de décision doit être inférieure a la date de liberation.");
         res.render('pages/edit_liberation', {
             n_type_decision: req.params.n_type_decision,
             n_ecrou: req.params.n_ecrou,
@@ -194,7 +194,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
                     duree: req.body.duree
                 })
             } else {
-                req.flash('success', 'Les informtions ont été bien mises à jour.');
+                req.flash('success', 'Les informations ont été bien mises à jour.');
                 res.redirect('/liberer');
             }
         })

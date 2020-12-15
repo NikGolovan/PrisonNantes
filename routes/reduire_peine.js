@@ -3,7 +3,7 @@ var router = express.Router();
 var dbConn = require('../lib/db');
 const Logger = require("../public/javascripts/core/logger");
 
-/* Definition de logger */
+/* Définition de logger */
 let logger = new Logger();
 
 router.get('/', function (req, res, next) {

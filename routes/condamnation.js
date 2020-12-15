@@ -173,7 +173,7 @@ router.get('/delete/(:n_ecrou)', function (req, res, next) {
         if (err) {
             req.flash('error', err)
         } else {
-            req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
+            req.flash('success', 'Condamné avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
             logger.infoDeleteSuccess();
             res.redirect('/condamnation')
         }
