@@ -147,12 +147,12 @@ function executeBatch(req, res, queries, form) {
             if (data !== null && data !== 'undefined') {
                 /* si les données ne sont pas vides, alors exécuter les requêtes comprenant les données */
                 dbConn.run(query, data, err => {
-                    if (err) handleError(req, res, err);
+                    if (err) throw err;
                 })
             } else {
                 /* si les données sont vides, alors exécuter les requêtes simples */
                 dbConn.run(query, err => {
-                    if (err) handleError(req, res, err);
+                    if (err) throw err;
                 })
             }
         })
@@ -172,11 +172,6 @@ function checkIncarceration (query, callback) {
         if (err) return callback(err);
         callback(null, result.length);
     });
-}
-
-function handleError(req, res, ex) {
-    let erreurMsg = ex.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + req.body.n_ecrou + " déjà existe." : ex;
-    req.flash('error', erreurMsg)
 }
 
 /* initialiser la page de modification des informations */
