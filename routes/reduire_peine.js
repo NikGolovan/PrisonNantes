@@ -3,7 +3,7 @@ var router = express.Router();
 var dbConn = require('../lib/db');
 const Logger = require("../public/javascripts/core/logger");
 
-/* definition de logger */
+/* Definition de logger */
 let logger = new Logger();
 
 router.get('/', function (req, res, next) {
@@ -23,7 +23,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
-/* créer nouvelle réduction de peine */
+/* Créer nouvelle réduction de peine */
 router.post('/', function (req, res, next) {
     let n_type_decision = req.body.n_type_decision;
     let n_ecrou = req.body.n_ecrou;
@@ -117,7 +117,7 @@ router.post('/', function (req, res, next) {
     }
 })
 
-/* afficher la page de modification des informations */
+/* Afficher la page de modification des informations */
 router.get('/edit/(:n_ecrou)', function (req, res, next) {
     dbConn.all("SELECT * FROM Reduction_peine WHERE n_ecrou = '" + req.params.n_ecrou + "'", function (err, rows, fields) {
         if (err) throw err
@@ -130,7 +130,7 @@ router.get('/edit/(:n_ecrou)', function (req, res, next) {
     })
 })
 
-/* mettre à jour les information concernant réduction de peine */
+/* Mettre à jour les information concernant réduction de peine */
 router.post('/update/:n_ecrou', function (req, res, next) {
     let fields = {
         n_ecrou: req.params.n_ecrou,

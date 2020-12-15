@@ -3,10 +3,10 @@ var router = express.Router();
 var dbConn = require('../lib/db');
 const Logger = require("../public/javascripts/core/logger");
 
-/* definition de logger */
+/* Definition de logger */
 let logger = new Logger();
 
-/* initializer la page de condamnation */
+/* Initialiser la page de condamnation */
 router.get('/', function (req, res, next) {
     dbConn.all('SELECT * FROM Condamnation ORDER BY n_ecrou desc', function (err, rows) {
         if (err) {
@@ -24,7 +24,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
-/* condamner */
+/* Condamner */
 router.post('/', function (req, res, next) {
     let n_type_decision = req.body.n_type_decision;
     let n_ecrou = req.body.n_ecrou;
@@ -111,7 +111,7 @@ router.post('/', function (req, res, next) {
     })
 })
 
-/* afficher la page de modification des informations d'un détenu condamné  */
+/* Afficher la page de modification des informations d'un détenu condamné  */
 router.get('/edit/(:n_ecrou)', function (req, res, next) {
     dbConn.all("SELECT * FROM Condamnation WHERE n_ecrou = '" + req.params.n_ecrou + "'", function (err, rows, fields) {
         if (err) throw err;
@@ -124,7 +124,7 @@ router.get('/edit/(:n_ecrou)', function (req, res, next) {
     })
 })
 
-/* modifier les information concernant un détenu condamné */
+/* Modifier les information concernant un détenu condamné */
 router.post('/update/:n_ecrou', function (req, res, next) {
     let fields = {
         n_ecrou: req.params.n_ecrou,
@@ -164,7 +164,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     })
 })
 
-/* supprimer decision de condamnation */
+/* Supprimer decision de condamnation */
 router.get('/delete/(:n_ecrou)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
     logger.infoDelete(" liés au condamné " + n_ecrou + " ...");

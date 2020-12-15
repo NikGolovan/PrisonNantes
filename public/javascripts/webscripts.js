@@ -1,6 +1,4 @@
-/*
-    Cette fonction contrôle la gestion de la barre latérale (fermeture/ouverture).
- */
+/* Cette fonction contrôle la gestion de la barre latérale (fermeture/ouverture) */
 $(document).ready(function () {
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
