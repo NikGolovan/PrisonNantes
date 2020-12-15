@@ -190,6 +190,8 @@ router.post('/update/:n_ecrou', function (req, res, next) {
                 req.flash('error', err)
                 res.render('pages/edit_liberation', {
                     date_decision: req.body.date_decision,
+                    n_ecrou: req.body.n_ecrou,
+                    date_liberation: req.body.date_liberation,
                     duree: req.body.duree
                 })
             } else {
