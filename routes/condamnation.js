@@ -157,7 +157,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
                 duree: req.body.duree
             })
         } else {
-            req.flash('success', 'Les informtions ont été bien mises à jour.');
+            req.flash('success', 'Les informations ont été bien mises à jour.');
             logger.infoUpdateSuccess();
             res.redirect('/condamnation');
         }

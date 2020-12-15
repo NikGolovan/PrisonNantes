@@ -110,7 +110,7 @@ router.post('/', function (req, res, next) {
             }
         })
         let queryUpdateDuree = "UPDATE Condamnation SET duree = duree - " + duree + " WHERE n_ecrou = '" + n_ecrou + "' AND duree > " + duree;
-        dbConn.all(queryUpdateDuree, function (err, result) {
+        dbConn.all(queryUpdateDuree, function (err) {
             if (err) throw err;
         })
         logger.infoReductionPeineSuccess(req.body.n_ecrou);
@@ -157,6 +157,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         $date_decision: req.body.date_decision,
         $duree: req.body.duree
     }
+
     logger.infoUpdateQuery(" concernant réduction de peine pour condamné " + req.params.n_ecrou);
     logger.infoExecQuery();
     dbConn.run("UPDATE Reduction_peine SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
@@ -164,6 +165,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
             req.flash('error', err)
             res.render('pages/edit_reduire_peine', {
                 date_decision: req.body.date_decision,
+                n_ecrou: req.body.n_ecrou,
                 duree: req.body.duree
             })
         } else {
