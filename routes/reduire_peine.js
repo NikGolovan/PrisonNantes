@@ -29,12 +29,11 @@ router.post('/', function (req, res, next) {
     let n_ecrou = req.body.n_ecrou;
     let date_decision = req.body.date_decision;
     let duree = req.body.duree;
+    let queryUpdateDuree = "UPDATE Condamnation SET duree = duree - " + duree + " WHERE n_ecrou = '" + n_ecrou + "' AND duree > " + duree;
 
     if (n_ecrou.length === 0 || n_type_decision.length === 0 ||
         date_decision.length === 0 || duree.length === 0) {
-
         req.flash('error', "Veuillez saisir tous les champs.");
-
         dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function (err, rows) {
             if (err) {
                 req.flash('error', err);
@@ -49,6 +48,7 @@ router.post('/', function (req, res, next) {
                 });
             }
         });
+        return;
     }
 
     var form_data = {
@@ -105,7 +105,6 @@ router.post('/', function (req, res, next) {
             return;
         }
     })
-    let queryUpdateDuree = "UPDATE Condamnation SET duree = duree - " + duree + " WHERE n_ecrou = '" + n_ecrou + "' AND duree > " + duree;
     dbConn.all(queryUpdateDuree, function (err) {
         if (err) throw err;
     })

@@ -1,14 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var dbConn  = require('../lib/db');
+var dbConn = require('../lib/db');
 
-router.get('/', function(req, res, next) {
-    dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function(err,rows) {
-        if(err) {
+router.get('/', function (req, res, next) {
+    dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function (err, rows) {
+        if (err) {
             req.flash('error', err);
-            res.render('pages/liberer_definitivement',{data:''});
+            res.render('pages/liberer_definitivement', {data: ''});
         } else {
-            res.render('pages/liberer_definitivement',{
+            res.render('pages/liberer_definitivement', {
                 data: rows,
                 n_type_decision: '',
                 n_ecrou: '',
@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
     const options = {
         n_type_decision: req.body.n_type_decision,
         n_ecrou: req.body.n_ecrou,
@@ -31,7 +31,6 @@ router.post('/', function(req, res, next) {
     let n_ecrou = req.body.n_ecrou;
     let date_decision = req.body.date_decision;
     let date_liberation = req.body.date_liberation;
-    let errors = false;
 
     if (options["date_decision"] > options["date_liberation"]) {
         req.flash('error', "La date de libération ne peut pas être inférieure à la date de decision.");
@@ -39,18 +38,14 @@ router.post('/', function(req, res, next) {
         return;
     }
 
-    if(n_ecrou.length === 0 || n_type_decision.length === 0 ||
-        date_decision.length === 0 || date_liberation.length === 0) {
-
-        errors = true;
+    if (!allFieldsAreSet(options)) {
         req.flash('error', "Veuillez saisir tous les champs.");
-
-        dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function(err,rows) {
-            if(err) {
+        dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function (err, rows) {
+            if (err) {
                 req.flash('error', err);
-                res.render('pages/liberer_definitivement',{data:''});
+                res.render('pages/liberer_definitivement', {data: ''});
             } else {
-                res.render('pages/liberer_definitivement',{
+                res.render('pages/liberer_definitivement', {
                     data: rows,
                     n_type_decision: n_type_decision,
                     n_ecrou: n_ecrou,
@@ -61,66 +56,61 @@ router.post('/', function(req, res, next) {
         });
     }
 
-    if(!errors) {
-
-        var form_data = {
-            $n_type_decision: n_type_decision,
-            $n_ecrou: n_ecrou,
-            $date_decision: date_decision,
-            $date_liberation: date_liberation
-        }
-
-        var form_data_decision = {
-            $n_type_decision: n_type_decision,
-            $n_ecrou: n_ecrou,
-            $date_decision: date_decision,
-        }
-
-        let queryInsert = "INSERT INTO Liberation_definitive values ($n_type_decision, $n_ecrou, $date_decision, $date_liberation)";
-        let queryCheckId = "SELECT \"n_ecrou\" FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
-        let queryInsertDecision = "INSERT INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
-
-        dbConn.all(queryCheckId, function (err, result) {
-            if (err) throw err;
-            if (result.length > 0) {
-                dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
-                    if (err) throw err;
-                })
-                // insert query
-                dbConn.all(queryInsert, form_data, function (err, result) {
-                    if (err) {
-                        let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
-                        req.flash('error', erreurMsg)
-
-                        dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function (err, rows) {
-                            if (err) {
-                                req.flash('error', err);
-                                res.render('pages/liberer_definitivement', {data: ''});
-                            } else {
-                                res.render('pages/liberer_definitivement', {
-                                    data: rows,
-                                    n_type_decision: '',
-                                    n_ecrou: '',
-                                    date_decision: '',
-                                    date_liberation: ''
-                                });
-                            }
-                        });
-                    } else {
-                        req.flash('success', 'Une nouvelle libération a été bien enregistré.');
-                        res.redirect(req.get('referer'));
-                    }
-                })
-            } else {
-                req.flash('error', "Détenu avec le numero " + n_ecrou + " n'existe pas.");
-                res.redirect('/liberer');
-                return;
-            }
-        })
+    var form_data = {
+        $n_type_decision: n_type_decision,
+        $n_ecrou: n_ecrou,
+        $date_decision: date_decision,
+        $date_liberation: date_liberation
     }
+
+    var form_data_decision = {
+        $n_type_decision: n_type_decision,
+        $n_ecrou: n_ecrou,
+        $date_decision: date_decision,
+    }
+
+    let queryInsert = "INSERT INTO Liberation_definitive values ($n_type_decision, $n_ecrou, $date_decision, $date_liberation)";
+    let queryCheckId = "SELECT n_ecrou FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
+    let queryInsertDecision = "INSERT INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
+
+    dbConn.all(queryCheckId, function (err, result) {
+        if (err) throw err;
+        if (result.length > 0) {
+            dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
+                if (err) throw err;
+            })
+            dbConn.all(queryInsert, form_data, function (err, result) {
+                if (err) {
+                    let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
+                    req.flash('error', erreurMsg)
+
+                    dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function (err, rows) {
+                        if (err) {
+                            req.flash('error', err);
+                            res.render('pages/liberer_definitivement', {data: ''});
+                        } else {
+                            res.render('pages/liberer_definitivement', {
+                                data: rows,
+                                n_type_decision: '',
+                                n_ecrou: '',
+                                date_decision: '',
+                                date_liberation: ''
+                            });
+                        }
+                    });
+                } else {
+                    req.flash('success', 'Une nouvelle libération a été bien enregistré.');
+                    res.redirect(req.get('referer'));
+                }
+            })
+        } else {
+            req.flash('error', "Détenu avec le numero " + n_ecrou + " n'existe pas.");
+            res.redirect('/liberer');
+            return;
+        }
+    })
 })
 
-// display edit book page
 router.get('/edit/(:n_ecrou)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
     let query = "SELECT * FROM Liberation_definitive WHERE n_ecrou = '" + n_ecrou + "'";
