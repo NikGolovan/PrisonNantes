@@ -229,7 +229,7 @@ router.get('/delete/(:n_ecrou)', function (req, res, next) {
     /* supprimer les données */
     executeBatch(req, res, arr, [null, null, null, null]);
     /* affichage du résultat */
-    req.flash('success', 'Enregistrement avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
+    req.flash('success', 'Détenu avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
     logger.infoDeleteSuccess();
     res.redirect('/')
 })
