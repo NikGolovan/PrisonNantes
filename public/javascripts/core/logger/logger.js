@@ -4,11 +4,11 @@
  */
 
 const Logger = function () {
-    const prefix = "\x1b[34m"; /* couleur bleu pour le texte dans la console */
+    const prefixInfo = "\x1b[34m"; /* couleur bleu pour le texte dans la console */
 
     /* Affichage dans le console information que la requête SQL est en cours d'exécution.  */
     this.infoExecQuery = function () {
-        console.log(prefix, "[INFO] ==> Exécution de la requête SQL...");
+        console.log(prefixInfo, "[INFO] ==> Exécution de la requête SQL...");
     }
 
     /*
@@ -17,12 +17,12 @@ const Logger = function () {
     */
     this.infoUpdateQuery = function (param) {
         param = (param === null) ? "..." : param;
-        console.log(prefix, "[INFO] ==> Mise à jour des informations" + param);
+        console.log(prefixInfo, "[INFO] ==> Mise à jour des informations" + param);
     }
 
     /* Affichage dans le console information sur le success de la requête SQL.  */
     this.infoUpdateSuccess = function () {
-        console.log(prefix, "[INFO] ==> Les modifications ont été bien prises en compte.");
+        console.log(prefixInfo, "[INFO] ==> Les modifications ont été bien prises en compte.");
     }
 
     /*
@@ -31,17 +31,17 @@ const Logger = function () {
     */
     this.infoDelete = function (param) {
         param = (param === null) ? "..." : param;
-        console.log(prefix, "[INFO] ==> Suppression des données" + param);
+        console.log(prefixInfo, "[INFO] ==> Suppression des données" + param);
     }
 
     /* Affichage dans le console information sur le success de la requête SQL.  */
     this.infoDeleteSuccess = function () {
-        console.log(prefix, "[INFO] ==> Les données ont été bien supprimées.");
+        console.log(prefixInfo, "[INFO] ==> Les données ont été bien supprimées.");
     }
 
     /* Affichage dans le console information sur la validation des données.  */
     this.infoValidationOfModifications = function () {
-        console.log(prefix, "[INFO] ==> Validation des modifications...");
+        console.log(prefixInfo, "[INFO] ==> Validation des modifications...");
     }
 
     /*
@@ -50,12 +50,12 @@ const Logger = function () {
     */
     this.infoBatchExecution = function (param) {
         param = (param === null) ? "..." : param;
-        console.log(prefix, "[INFO] ==> Execution du batch... traitement de la requête SQL [" + param + "]");
+        console.log(prefixInfo, "[INFO] ==> Execution du batch... traitement de la requête SQL [" + param + "]");
     }
 
     /* Affichage dans le console information sur le success de la requête SQL. */
     this.infoIncarcerationSuccess = function () {
-        console.log(prefix, "[INFO] ==> Nouveau détenu a été bien incarcéré.");
+        console.log(prefixInfo, "[INFO] ==> Nouveau détenu a été bien incarcéré.");
     }
 
     /*
@@ -64,7 +64,7 @@ const Logger = function () {
     */
     this.infoCreateDetenu = function (param) {
         param = (param === null) ? " " : param;
-        console.log(prefix, "[INFO] ==> Incarcération du détenu avec le numéro " + param + " ...");
+        console.log(prefixInfo, "[INFO] ==> Incarcération du détenu avec le numéro " + param + " ...");
     }
 
     /*
@@ -73,7 +73,7 @@ const Logger = function () {
     */
     this.infoCreateReductionPeine = function (param) {
         param = (param === null) ? " " : param;
-        console.log(prefix, "[INFO] ==> Insertion d'une nouvelle reduction de peine pour condamné " + param);
+        console.log(prefixInfo, "[INFO] ==> Insertion d'une nouvelle reduction de peine pour condamné " + param);
     }
 
     /*
@@ -82,7 +82,7 @@ const Logger = function () {
     */
     this.infoReductionPeineSuccess = function (param) {
         param = (param === null) ? " " : param;
-        console.log(prefix, "[INFO] ==> La peine pour condamné " + param + " a été bien réduite.");
+        console.log(prefixInfo, "[INFO] ==> La peine pour condamné " + param + " a été bien réduite.");
     }
 }
 
