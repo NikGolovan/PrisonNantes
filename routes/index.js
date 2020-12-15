@@ -9,7 +9,7 @@ const Logger = require("../public/javascripts/core/logger");
 /* definition de logger */
 let logger = new Logger();
 
-/* initializer la page d'accueil */
+/* Initialiser la page d'accueil */
 router.get('/', function (req, res, next) {
     dbConn.all('SELECT * FROM Detenu INNER JOIN Incarceration ON Detenu.n_ecrou = Incarceration.n_ecrou ORDER BY n_ecrou desc', function (err, rows) {
         if (err) {
@@ -21,7 +21,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
-/* initializer la page d'incarcération */
+/* Initialiser la page d'incarcération */
 router.get('/add', function (req, res, next) {
     res.render('pages/add', {
         n_ecrou: '',
@@ -88,7 +88,7 @@ router.post('/add', function (req, res, next) {
     }
 
     if (options["date_incarceration"] <= options["date_naissance"]) {
-        req.flash('error', "La date d'incarceration ne peut pas être inférieure ou égale à la date de naissance.");
+        req.flash('error', "La date d'incarcération ne peut pas être inférieure ou égale à la date de naissance.");
         res.render('pages/add', options);
         return;
     }
@@ -201,7 +201,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     }
 
     if (options["date_incarceration"] <= options["date_naissance"]) {
-        req.flash('error', "La date d'incarceration ne peut pas être inférieure ou égale à la date de naissance.");
+        req.flash('error', "La date d'incarcération ne peut pas être inférieure ou égale à la date de naissance.");
         res.render('pages/add', options);
         return;
     }
