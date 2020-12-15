@@ -228,7 +228,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     let data = [form_data, null];
     logger.infoUpdateQuery(" pour l'incarcéré numéro " + req.params.n_ecrou + "...");
     executeBatch(req, res, arr, data);
-    req.flash('success', 'Les informtions ont été bien mises à jour.');
+    req.flash('success', 'Les informations ont été bien mises à jour.');
     logger.infoUpdateSuccess();
     res.redirect('/');
 })
