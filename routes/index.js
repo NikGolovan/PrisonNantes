@@ -6,7 +6,7 @@ var Affaire = require('../public/javascripts/core/affaire');
 var Motif = require('../public/javascripts/core/motif');
 const Logger = require("../public/javascripts/core/logger");
 
-/* definition de logger */
+/* Définition de logger */
 let logger = new Logger();
 
 /* Initialiser la page d'accueil */
@@ -54,7 +54,7 @@ router.post('/add', function (req, res, next) {
         libelle_motif: req.body.libelle_motif,
     }
 
-    /* l'instance du detenu */
+    /* L'instance du detenu */
     let detenu = new Detenu({
         n_ecrou: req.body.n_ecrou,
         prenom: req.body.prenom,
@@ -63,13 +63,13 @@ router.post('/add', function (req, res, next) {
         lieu_naissance: req.body.lieu_naissance,
     });
 
-    /* l'instance du motif */
+    /* L'instance du motif */
     let motif = new Motif({
         n_motif: req.body.n_motif,
         libelle_motif: req.body.nom_juridiction
     });
 
-    /* l'instance de l'affaire */
+    /* L'instance de l'affaire */
     let affaire = new Affaire({
         n_affaire: req.body.n_affaire,
         nom_juridiction: req.body.nom_juridiction,
@@ -93,7 +93,7 @@ router.post('/add', function (req, res, next) {
         return;
     }
 
-    /* création du tableau des commandes pour exécution batch du SQL */
+    /* Création du tableau des commandes pour exécution batch du SQL */
     let arr = [
         "INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)",
         "INSERT OR IGNORE INTO Affaire values ($n_affaire, $nom_juridiction, $date_incarceration)",
@@ -112,7 +112,7 @@ router.post('/add', function (req, res, next) {
         "UPDATE Incarceration SET date_incarceration = '" + req.body.date_incarceration + "' WHERE n_ecrou = '" + req.body.n_ecrou + "'"
     ]
 
-    /* création du tableau des données pour exécution batch du SQL */
+    /* Création du tableau des données pour exécution batch du SQL */
     let data = [detenu, affaire, motif, null, null, null];
 
     checkIncarceration(queryCheckDetenu, function (err, result) {
@@ -174,7 +174,7 @@ function checkIncarceration (query, callback) {
     });
 }
 
-/* initialiser la page de modification des informations */
+/* Initialiser la page de modification des informations */
 router.get('/edit/(:n_ecrou)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
     let query = "SELECT * FROM Detenu d JOIN Incarceration incr1 ON d.n_ecrou = incr1.n_ecrou AND d.n_ecrou = '" + n_ecrou + "'";
@@ -184,7 +184,7 @@ router.get('/edit/(:n_ecrou)', function (req, res, next) {
     })
 })
 
-/* mettre à jour les données */
+/* Mettre à jour les données */
 router.post('/update/:n_ecrou', function (req, res, next) {
     let options = {
         n_ecrou: req.params.n_ecrou,
@@ -206,7 +206,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         return;
     }
 
-    /* vérifier si les champs sont vides */
+    /* Vérifier si les champs sont vides */
     if (!allFieldsAreSet(options)) {
         req.flash('error', "Veuillez saisir les modifications.");
         res.render('pages/edit', options)
@@ -234,18 +234,18 @@ router.post('/update/:n_ecrou', function (req, res, next) {
 })
 
 router.get('/delete/(:n_ecrou)', function (req, res, next) {
-    /* prendre n_ecrou du détenu */
+    /* Prendre n_ecrou du détenu */
     let n_ecrou = req.params.n_ecrou;
     logger.infoDelete("liés au détenu " + n_ecrou + " ...");
-    /* création du tableau des commandes pour exécution batch du SQL */
+    /* Création du tableau des commandes pour exécution batch du SQL */
     let arr = [
         "DELETE FROM Incarceration WHERE n_ecrou = '" + n_ecrou + "'",
         "DELETE FROM Detenu_Affaire WHERE n_ecrou = '" + n_ecrou + "'",
         "DELETE FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'",
     ]
-    /* supprimer les données */
+    /* Supprimer les données */
     executeBatch(req, res, arr, [null, null, null, null]);
-    /* affichage du résultat */
+    /* Affichage du résultat */
     req.flash('success', 'Détenu avec numéro d\'écrou ' + n_ecrou + ' a été bien supprimé.');
     logger.infoDeleteSuccess();
     res.redirect('/')
