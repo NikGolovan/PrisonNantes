@@ -147,9 +147,9 @@ function executeBatch(req, res, queries, form) {
                 })
             }
         })
+        dbConn.run("COMMIT");
     })
     logger.infoValidationOfModifications();
-    dbConn.run("COMMIT");
 }
 
 function handleError(req, res, ex) {
