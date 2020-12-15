@@ -162,7 +162,7 @@ function executeBatch(req, res, queries, form) {
 }
 
 /*
-    Cette fonction permet de savoir si le détenu a a été déjà incarcéré.
+    Cette fonction permet de savoir si le détenu a été déjà incarcéré.
     @param: {String} query - la requête SQL
     @param: {Function} callback - fonction qui retourne le résultat
     @return: {Function} callback
