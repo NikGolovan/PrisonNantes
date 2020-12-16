@@ -4,7 +4,7 @@ var dbConn = require('../lib/db');
 
 /* Initialiser la page de détenus en preventive */
 router.get('/', function (req, res, next) {
-    dbConn.all('SELECT DISTINCT Detenu.* FROM Detenu LEFT OUTER JOIN Decision ON Detenu.n_ecrou = Decision.n_ecrou WHERE (Decision.n_type_decision <> 1 OR Decision.n_type_decision is NULL) ORDER BY Detenu.n_ecrou desc', function (err, rows) {
+    dbConn.all('SELECT DISTINCT Detenu.* FROM Detenu LEFT OUTER JOIN Decision ON Detenu.n_ecrou = Decision.n_ecrou WHERE ((Decision.n_type_decision <> 1 AND Decision.n_type_decision <> 2) OR Decision.n_type_decision is NULL) ORDER BY Detenu.n_ecrou desc', function (err, rows) {
         if (err) {
             req.flash('error', err);
             res.render('pages/preventive', {data: ''});
