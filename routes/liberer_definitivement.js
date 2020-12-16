@@ -29,7 +29,7 @@ router.post('/', function (req, res, next) {
         n_ecrou: req.body.n_ecrou,
         date_decision: req.body.date_decision,
         date_liberation: req.body.date_liberation
-    }
+    };
 
     let n_type_decision = req.body.n_type_decision;
     let n_ecrou = req.body.n_ecrou;
@@ -65,13 +65,13 @@ router.post('/', function (req, res, next) {
         $n_ecrou: n_ecrou,
         $date_decision: date_decision,
         $date_liberation: date_liberation
-    }
+    };
 
     var form_data_decision = {
         $n_type_decision: n_type_decision,
         $n_ecrou: n_ecrou,
         $date_decision: date_decision,
-    }
+    };
 
     let queryInsert = "INSERT INTO Liberation_definitive values ($n_type_decision, $n_ecrou, $date_decision, $date_liberation)";
     let queryCheckId = "SELECT n_ecrou FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
@@ -88,7 +88,7 @@ router.post('/', function (req, res, next) {
             dbConn.all(queryInsert, form_data, function (err, result) {
                 if (err) {
                     let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
-                    req.flash('error', erreurMsg)
+                    req.flash('error', erreurMsg);
 
                     dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function (err, rows) {
                         if (err) {
@@ -108,14 +108,14 @@ router.post('/', function (req, res, next) {
                     req.flash('success', 'Une nouvelle libération a été bien enregistré.');
                     res.redirect(req.get('referer'));
                 }
-            })
+            });
         } else {
             req.flash('error', "Détenu avec le numero " + n_ecrou + " n'existe pas.");
             res.redirect('/liberer');
             return;
         }
-    })
+    });
     logger.infoLiberationSuccess();
-})
+});
 
 module.exports = router;
