@@ -53,11 +53,10 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th scope="col">Type decision</th>
-                                <th scope="col">N ecrou</th>
-                                <th scope="col">Date decision</th>
-                                <th scope="col">Date liberation</th>
-                                <th width="200px">Action</th>
+                                <th width="200px" scope="col">Type decision</th>
+                                <th width="200px" scope="col">N ecrou</th>
+                                <th width="200px" scope="col">Date decision</th>
+                                <th width="200px" scope="col">Date liberation</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -67,9 +66,6 @@
                                     <td><%= data[i].n_ecrou%></td>
                                     <td><%= data[i].date_decision%></td>
                                     <td><%= data[i].date_liberation%></td>
-                                    <td>
-                                        <a class="btn btn-success edit" href="liberer/edit/<%=data[i].n_ecrou%>">Éditer</a>
-                                    </td>
                                 </tr>
                             <% } %>
                             </tbody>

@@ -77,12 +77,28 @@ const Logger = function () {
     }
 
     /*
-        Affichage d'information sur la création d'une nouvelle réduction de peine.
+        Affichage d'information sur le success de réduction de peine.
         @param: {String} param - le numéro de condamné
     */
     this.infoReductionPeineSuccess = function (param) {
         param = (param === null) ? " " : param;
         console.log(prefixInfo, "[INFO] ==> La peine pour condamné " + param + " a été bien réduite.");
+    }
+
+    /*
+        Affichage d'information sur la création d'une nouvelle liberation.
+        @param: {String} param - le numéro du détenu
+    */
+    this.infoCreateLiberation = function (param) {
+        param = (param === null) ? "." : param;
+        console.log(prefixInfo, "[INFO] ==> Liberation définitive du détenu " + param);
+    }
+
+    /*
+        Affichage d'information sur le success de libération.
+    */
+    this.infoLiberationSuccess = function () {
+        console.log(prefixInfo, "[INFO] ==> Le détenu a été bien libéré.");
     }
 }
 

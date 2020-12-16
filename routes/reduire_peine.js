@@ -6,6 +6,7 @@ const Logger = require("../public/javascripts/core/logger/logger");
 /* Définition de logger */
 let logger = new Logger();
 
+/* initialiser la page de réduction de peine */
 router.get('/', function (req, res, next) {
     dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function (err, rows) {
         if (err) {
@@ -112,8 +113,9 @@ router.post('/', function (req, res, next) {
 })
 
 /* Afficher la page de modification des informations */
-router.get('/edit/(:n_ecrou)', function (req, res, next) {
-    dbConn.all("SELECT * FROM Reduction_peine WHERE n_ecrou = '" + req.params.n_ecrou + "'", function (err, rows, fields) {
+router.get('/edit/(:n_ecrou)(:date_decision)', function (req, res, next) {
+    dbConn.all("SELECT * FROM Reduction_peine WHERE n_ecrou = '" + req.params.n_ecrou + "' AND " +
+        "date_decision = '" + req.params.date_decision + "'", function (err, rows) {
         if (err) throw err
         if (rows.length <= 0) {
             req.flash('error', 'Pas de condamné avec n_ecrou = ' + n_ecrou)
@@ -125,7 +127,7 @@ router.get('/edit/(:n_ecrou)', function (req, res, next) {
 })
 
 /* Mettre à jour les information concernant réduction de peine */
-router.post('/update/:n_ecrou', function (req, res, next) {
+router.post('/update/:n_ecrou:date_decision', function (req, res, next) {
     let fields = {
         n_ecrou: req.params.n_ecrou,
         date_decision: req.body.date_decision,
@@ -148,13 +150,14 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     }
 
     var form_data = {
-        $date_decision: req.body.date_decision,
         $duree: req.body.duree
     }
 
     logger.infoUpdateQuery(" concernant réduction de peine pour condamné " + req.params.n_ecrou);
     logger.infoExecQuery();
-    dbConn.run("UPDATE Reduction_peine SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
+
+    dbConn.run("UPDATE Reduction_peine SET duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'" +
+        " AND date_decision = '" + req.params.date_decision + "'", form_data, function (err, result) {
         if (err) {
             req.flash('error', err)
             res.render('pages/edit_reduire_peine', {
@@ -167,7 +170,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
             res.redirect('/reduire');
         }
     })
-    let queryUpdateDuree = "UPDATE Condamnation SET duree = duree + " + fields["duree"] + " WHERE n_ecrou = '" + fields["n_ecrou"] + "'";
+    let queryUpdateDuree = "UPDATE Condamnation SET duree = duree - (" + fields["duree"] + " + duree) WHERE n_ecrou = '" + fields["n_ecrou"] + "'";
     dbConn.all(queryUpdateDuree, function (err) {
         if (err) throw err;
     })

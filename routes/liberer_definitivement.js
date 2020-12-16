@@ -1,7 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var dbConn = require('../lib/db');
+const Logger = require("../public/javascripts/core/logger/logger");
 
+/* Définition de logger */
+let logger = new Logger();
+
+/* initialiser la page de réduction de peine */
 router.get('/', function (req, res, next) {
     dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function (err, rows) {
         if (err) {
@@ -19,6 +24,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/* libérer définitivement */
 router.post('/', function (req, res, next) {
     const options = {
         n_type_decision: req.body.n_type_decision,
@@ -73,6 +79,8 @@ router.post('/', function (req, res, next) {
     let queryCheckId = "SELECT n_ecrou FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
     let queryInsertDecision = "INSERT INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
 
+    logger.infoCreateLiberation(n_ecrou);
+    logger.infoExecQuery();
     dbConn.all(queryCheckId, function (err, result) {
         if (err) throw err;
         if (result.length > 0) {
@@ -109,87 +117,7 @@ router.post('/', function (req, res, next) {
             return;
         }
     })
-})
-
-router.get('/edit/(:n_ecrou)', function (req, res, next) {
-    let n_ecrou = req.params.n_ecrou;
-    let query = "SELECT * FROM Liberation_definitive WHERE n_ecrou = '" + n_ecrou + "'";
-
-    dbConn.all(query, function (err, rows, fields) {
-        if (err) throw err
-        if (rows.length <= 0) {
-            req.flash('error', 'Pas de condamné avec n_ecrou = ' + n_ecrou)
-            res.redirect('pages/liberer')
-        } else {
-            res.render('pages/edit_liberation', {
-                title: 'Modifier Information',
-                n_type_decision: rows[0].n_type_decision,
-                n_ecrou: rows[0].n_ecrou,
-                date_decision: rows[0].date_decision,
-                date_liberation: rows[0].date_liberation,
-                canceled: ''
-            })
-        }
-    })
-})
-
-router.post('/update/:n_ecrou', function (req, res, next) {
-    let fields = {
-        n_ecrou: req.params.n_ecrou,
-        date_decision: req.body.date_decision,
-        date_liberation: req.body.date_liberation
-    }
-    let canceled = req.body.canceled;
-    let errors = false;
-
-    if (canceled) {
-        res.redirect('/liberer');
-        return;
-    }
-
-    if (!allFieldsAreSet(fields)) {
-        errors = true;
-        req.flash('error', "Veuillez saisir les modifications.");
-        res.render('pages/edit_liberation', {
-            n_type_decision: req.params.n_type_decision,
-            n_ecrou: req.params.n_ecrou,
-            date_decision: req.body.date_decision,
-            date_liberation: req.body.date_liberation
-        })
-    }
-
-    if (fields["date_decision"] > fields["date_liberation"]) {
-        req.flash('error', "Date de décision doit être inférieure a la date de liberation.");
-        res.render('pages/edit_liberation', {
-            n_type_decision: req.params.n_type_decision,
-            n_ecrou: req.params.n_ecrou,
-            date_decision: req.body.date_decision,
-            date_liberation: req.body.date_liberation
-        })
-        return;
-    }
-
-    if (!errors) {
-        var form_data = {
-            $date_decision: req.body.date_decision,
-            $date_liberation: req.body.date_liberation
-        }
-
-        dbConn.run("UPDATE Liberation_definitive SET date_decision = $date_decision, date_liberation = $date_liberation WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
-            if (err) {
-                req.flash('error', err)
-                res.render('pages/edit_liberation', {
-                    date_decision: req.body.date_decision,
-                    n_ecrou: req.body.n_ecrou,
-                    date_liberation: req.body.date_liberation,
-                    duree: req.body.duree
-                })
-            } else {
-                req.flash('success', 'Les informations ont été bien mises à jour.');
-                res.redirect('/liberer');
-            }
-        })
-    }
+    logger.infoLiberationSuccess();
 })
 
 function allFieldsAreSet(fields) {

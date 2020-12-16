@@ -238,11 +238,12 @@ router.post('/update/:n_ecrou', function (req, res, next) {
 router.get('/delete/(:n_ecrou)', function (req, res, next) {
     /* Prendre n_ecrou du détenu */
     let n_ecrou = req.params.n_ecrou;
-    logger.infoDelete("liés au détenu " + n_ecrou + " ...");
+    logger.infoDelete(" liés au détenu " + n_ecrou + " ...");
     /* Création du tableau des commandes pour exécution batch du SQL */
     let arr = [
         "DELETE FROM Incarceration WHERE n_ecrou = '" + n_ecrou + "'",
         "DELETE FROM Detenu_Affaire WHERE n_ecrou = '" + n_ecrou + "'",
+        "DELETE FROM Decision WHERE n_ecrou = '" + n_ecrou + "'",
         "DELETE FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'",
     ]
     /* Supprimer les données */
