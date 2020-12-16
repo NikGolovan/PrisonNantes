@@ -200,7 +200,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
     if (req.body.canceled) {
         res.redirect('/');
         return;
-    };
+    }
 
     /* Vérifier si les dates sont valides */
     if (common.twoDatesAreNotValid(options["date_incarceration"], options["date_naissance"])) {
