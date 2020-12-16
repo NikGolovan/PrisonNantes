@@ -116,7 +116,8 @@ router.post('/add', function (req, res, next) {
     let data = [detenu, affaire, motif, null, null, null];
 
     checkIncarceration(queryCheckDetenu, function (err, result) {
-        if (err) throw err;
+        if (err)
+            req.flash('error', err);
         if (result > 0) {
             req.flash('error', "L'incarcéré avec le numéro " + req.body.n_ecrou + " existe déjà.");
             res.render('pages/add', options);
@@ -147,12 +148,12 @@ function executeBatch(req, res, queries, form) {
             if (data !== null && data !== 'undefined') {
                 /* si les données ne sont pas vides, alors exécuter les requêtes comprenant les données */
                 dbConn.run(query, data, err => {
-                    if (err) throw err;
+                    if (err) req.flash('error', err);
                 })
             } else {
                 /* si les données sont vides, alors exécuter les requêtes simples */
                 dbConn.run(query, err => {
-                    if (err) throw err;
+                    if (err) req.flash('error', err);
                 })
             }
         })
@@ -179,7 +180,7 @@ router.get('/edit/(:n_ecrou)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
     let query = "SELECT * FROM Detenu d JOIN Incarceration incr1 ON d.n_ecrou = incr1.n_ecrou AND d.n_ecrou = '" + n_ecrou + "'";
     dbConn.all(query, function (err, rows) {
-        if (err) throw err
+        if (err) req.flash('error', err);
         res.render('pages/edit', rows[0])
     })
 })

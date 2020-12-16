@@ -80,10 +80,10 @@ router.post('/', function (req, res, next) {
     logger.infoCreateLiberation(n_ecrou);
     logger.infoExecQuery();
     dbConn.all(queryCheckId, function (err, result) {
-        if (err) throw err;
+        if (err) req.flash('error', err);
         if (result.length > 0) {
             dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
-                if (err) throw err;
+                if (err) req.flash('error', err);
             })
             dbConn.all(queryInsert, form_data, function (err, result) {
                 if (err) {

@@ -81,7 +81,7 @@ router.post('/', function (req, res, next) {
 
     /* exécution des requêtes */
     dbConn.all(queryCheckId, function (err, result) {
-        if (err) throw err;
+        if (err) req.flash('error', err);
         /* insérer dans la table Decision  */
         dbConn.all(queryInsertDecision, form_data_decision, function (err) {
             if (err) {
@@ -125,7 +125,7 @@ router.post('/', function (req, res, next) {
 /* Afficher la page de modification des informations d'un détenu condamné  */
 router.get('/edit/(:n_ecrou)', function (req, res, next) {
     dbConn.all("SELECT * FROM Condamnation WHERE n_ecrou = '" + req.params.n_ecrou + "'", function (err, rows, fields) {
-        if (err) throw err;
+        if (err) req.flash('error', err);
         if (rows.length <= 0) {
             req.flash('error', 'Pas de condamné avec n_ecrou = ' + n_ecrou)
             res.redirect('pages/condamner')

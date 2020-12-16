@@ -74,7 +74,7 @@ router.post('/', function (req, res, next) {
     logger.infoExecQuery();
     /* execution des requêtes */
     dbConn.all(queryCheckId, function (err, result) {
-        if (err) throw err;
+        if (err) req.flash('error', err);
         /* insérer dans la table de Decision */
         dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
         })
@@ -118,7 +118,7 @@ router.post('/', function (req, res, next) {
 router.get('/edit/(:n_ecrou)(:date_decision)', function (req, res, next) {
     dbConn.all("SELECT * FROM Reduction_peine WHERE n_ecrou = '" + req.params.n_ecrou + "' AND " +
         "date_decision = '" + req.params.date_decision + "'", function (err, rows) {
-        if (err) throw err
+        if (err) req.flash('error', err);
         if (rows.length <= 0) {
             req.flash('error', 'Pas de condamné avec n_ecrou = ' + n_ecrou)
             res.redirect('pages/reduire')
