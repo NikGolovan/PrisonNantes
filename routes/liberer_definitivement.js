@@ -58,6 +58,7 @@ router.post('/', function (req, res, next) {
                 });
             }
         });
+        return;
     }
 
     var form_data = {
