@@ -34,6 +34,7 @@ router.get('/add', function (req, res, next) {
         n_affaire: '',
         n_motif: '',
         libelle_motif: '',
+        date_faits: '',
         canceled: ''
     })
 })
@@ -50,6 +51,7 @@ router.post('/add', function (req, res, next) {
         date_incarceration: req.body.date_incarceration,
         nom_juridiction: req.body.nom_juridiction,
         n_affaire: req.body.n_affaire,
+        date_faits: req.body.date_faits,
         n_motif: req.body.n_motif,
         libelle_motif: req.body.libelle_motif,
     }
@@ -73,7 +75,7 @@ router.post('/add', function (req, res, next) {
     let affaire = new Affaire({
         n_affaire: req.body.n_affaire,
         nom_juridiction: req.body.nom_juridiction,
-        date_incarceration: req.body.date_incarceration
+        date_faits: req.body.date_faits
     });
 
     if (req.body.canceled) {
@@ -96,7 +98,7 @@ router.post('/add', function (req, res, next) {
     /* Création du tableau des commandes pour exécution batch du SQL */
     let arr = [
         "INSERT INTO Detenu values ($n_ecrou, $prenom, $nom, $date_naissance, $lieu_naissance)",
-        "INSERT OR IGNORE INTO Affaire values ($n_affaire, $nom_juridiction, $date_incarceration)",
+        "INSERT OR IGNORE INTO Affaire values ($n_affaire, $nom_juridiction, $date_faits)",
         "INSERT OR IGNORE INTO Motif values ($n_motif, $libelle_motif)",
 
         "INSERT INTO Detenu_Affaire (n_ecrou, n_affaire, nom_juridiction) " +
