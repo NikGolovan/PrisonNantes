@@ -69,6 +69,7 @@
                                     <td><%= data[i].duree%></td>
                                     <td>
                                         <a class="btn btn-success edit" href="reduire/edit/<%=data[i].n_ecrou%><%=data[i].date_decision%>">Éditer</a>
+                                        <a class="btn btn-danger delete" onclick="return confirm('Supprimer libération de peine date de <%=data[i].date_decision%> concernant le détenu <%=data[i].n_ecrou%> ?')" href="reduire/delete/<%=data[i].n_ecrou%><%=data[i].date_decision%>">Supprimer</a>
                                     </td>
                                 </tr>
                             <% } %>
