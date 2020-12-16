@@ -4,15 +4,12 @@
 const Liberation_definitive = function (options) {
     Decision.apply(this, arguments);
     /* Redéfinir le type de décision de la classe Decision  */
-    this.typeDecision = 3;
-    this.date_liberation = options.date_liberation;
+    this.$typeDecision = 3;
+    this.$date_liberation = options.date_liberation;
 }
 /* Redéfinir le prototype de la classe Decision */
 Liberation_definitive.prototype = Object.create(Decision.prototype);
 /* Pointer vers le constructeur de la classe Liberation_definitive et pas Decision */
 Liberation_definitive.prototype.constructor = Liberation_definitive;
 
-/* Création d'instance de la classe Liberation_definitive */
-const liberation_definitive = new Liberation_definitive({date_liberation: '3/3/3'});
-
-console.log(liberation_definitive);
+module.exports = Liberation_definitive;

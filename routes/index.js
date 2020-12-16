@@ -4,10 +4,8 @@ var dbConn = require('../lib/db');
 var Detenu = require('../public/javascripts/core/classes/detenu');
 var Affaire = require('../public/javascripts/core/classes/affaire');
 var Motif = require('../public/javascripts/core/classes/motif');
-const Logger = require("../public/javascripts/core/logger/logger");
-
-/* Définition de logger */
-let logger = new Logger();
+var logger = require("../public/javascripts/core/logger/logger");
+var common = require("../public/javascripts/core/commons/common");
 
 /* Initialiser la page d'accueil */
 router.get('/', function (req, res, next) {
@@ -83,13 +81,13 @@ router.post('/add', function (req, res, next) {
         return;
     }
 
-    if (!allFieldsAreSet(options)) {
+    if (!common.allFieldsAreSet(options)) {
         req.flash('error', "Veuillez saisir tous les champs.");
         res.render('pages/add', options);
         return;
     }
 
-    if (options["date_incarceration"] <= options["date_naissance"]) {
+    if (common.twoDatesAreNotValid(options["date_incarceration"], options["date_naissance"])) {
         req.flash('error', "La date d'incarcération ne peut pas être inférieure ou égale à la date de naissance.");
         res.render('pages/add', options);
         return;
@@ -197,19 +195,21 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         date_incarceration: req.body.date_incarceration
     }
 
+    /* gestion de bouton 'Annuler' */
     if (req.body.canceled) {
         res.redirect('/');
         return;
     }
 
-    if (options["date_incarceration"] <= options["date_naissance"]) {
+    /* Vérifier si les dates sont valides */
+    if (common.twoDatesAreNotValid(options["date_incarceration"], options["date_naissance"])) {
         req.flash('error', "La date d'incarcération ne peut pas être inférieure ou égale à la date de naissance.");
-        res.render('pages/add', options);
+        res.redirect(req.get('referer'));
         return;
     }
 
     /* Vérifier si les champs sont vides */
-    if (!allFieldsAreSet(options)) {
+    if (!common.allFieldsAreSet(options)) {
         req.flash('error', "Veuillez saisir les modifications.");
         res.render('pages/edit', options)
         return;
@@ -253,13 +253,5 @@ router.get('/delete/(:n_ecrou)', function (req, res, next) {
     logger.infoDeleteSuccess();
     res.redirect('/')
 })
-
-function allFieldsAreSet(fields) {
-    for (let key in fields) {
-        if (fields[key].length === 0)
-            return false;
-    }
-    return true;
-}
 
 module.exports = router;

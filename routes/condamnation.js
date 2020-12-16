@@ -1,10 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var dbConn = require('../lib/db');
-const Logger = require("../public/javascripts/core/logger/logger");
-
-/* Definition de logger */
-let logger = new Logger();
+var logger = require("../public/javascripts/core/logger/logger");
+var common = require("../public/javascripts/core/commons/common");
 
 /* Initialiser la page de condamnation */
 router.get('/', function (req, res, next) {
@@ -38,7 +36,8 @@ router.post('/', function (req, res, next) {
         duree: req.body.duree
     }
 
-    if (!allFieldsAreSet(options)) {
+    /* vérifier si les champs sont vides */
+    if (!common.allFieldsAreSet(options)) {
         req.flash('error', "Veuillez saisir tous les champs.");
         dbConn.all('SELECT * FROM Condamnation ORDER BY n_ecrou desc', function (err, rows) {
             if (err) {
@@ -57,6 +56,7 @@ router.post('/', function (req, res, next) {
         return;
     }
 
+    /* les données contenant information sur condamnation */
     var form_data = {
         $n_type_decision: n_type_decision,
         $n_ecrou: n_ecrou,
@@ -64,25 +64,34 @@ router.post('/', function (req, res, next) {
         $duree: duree
     }
 
+    /* les données contenant la décision */
     var form_data_decision = {
         $n_type_decision: n_type_decision,
         $n_ecrou: n_ecrou,
         $date_decision: date_decision,
     }
 
+    /* variables contenant les requêtes SQL */
     let queryInsert = "INSERT INTO Condamnation values ($n_type_decision, $n_ecrou, $date_decision, $duree)";
     let queryInsertDecision = "INSERT INTO Decision values ($n_type_decision, $n_ecrou, $date_decision)";
     let queryCheckId = "SELECT \"n_ecrou\" FROM Detenu WHERE n_ecrou = '" + n_ecrou + "'";
 
+    logger.infoCreateCondamnation(req.body.n_ecrou);
+    logger.infoExecQuery();
+
+    /* exécution des requêtes */
     dbConn.all(queryCheckId, function (err, result) {
         if (err) throw err;
-        dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
+        /* insérer dans la table Decision  */
+        dbConn.all(queryInsertDecision, form_data_decision, function (err) {
             if (err) {
                 let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " a été déjà condamné." : err;
                 req.flash('error', erreurMsg)
             }
         })
+        /* vérifier si Detenu existe */
         if (result.length > 0) {
+            /* insérer dans la table Condamnation  */
             dbConn.all(queryInsert, form_data, function (err, result) {
                 if (err) {
                     dbConn.all('SELECT * FROM Condamnation ORDER BY n_ecrou desc', function (err, rows) {
@@ -109,6 +118,8 @@ router.post('/', function (req, res, next) {
             res.redirect('/condamnation');
         }
     })
+    /* afficher fin d'exécution des requêtes */
+    logger.infoCondamnationSuccess(req.body.n_ecrou);
 })
 
 /* Afficher la page de modification des informations d'un détenu condamné  */
@@ -132,16 +143,19 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         duree: req.body.duree
     }
 
+    /* gestion de la bouton 'Annuler' dans le formulaire */
     if (req.body.canceled) {
         res.redirect('/condamnation');
         return;
     }
 
-    if (!allFieldsAreSet(fields)) {
+    /* vérifier si les champs ne sont pas vides */
+    if (!common.allFieldsAreSet(fields)) {
         req.flash('error', "Veuillez saisir les modifications.");
         res.render('pages/edit_condamnation', {n_type_decision: req.params.n_type_decision, fields})
     }
 
+    /* donnés à mettre à jour */
     var form_data = {
         $date_decision: req.body.date_decision,
         $duree: req.body.duree
@@ -149,6 +163,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
 
     logger.infoUpdateQuery(" du condamné " + req.params.n_ecrou);
     logger.infoExecQuery();
+    /* exécution de la requête */
     dbConn.run("UPDATE Condamnation SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
         if (err) {
             req.flash('error', err)
@@ -162,6 +177,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
             res.redirect('/condamnation');
         }
     })
+    logger.infoUpdateSuccess();
 })
 
 /* Supprimer decision de condamnation */
@@ -179,14 +195,5 @@ router.get('/delete/(:n_ecrou)', function (req, res, next) {
         }
     })
 })
-
-function allFieldsAreSet(fields) {
-    for (let key in fields) {
-        if (fields[key].length === 0)
-            return false;
-    }
-    return true;
-}
-
 
 module.exports = router;

@@ -86,6 +86,24 @@ const Logger = function () {
     }
 
     /*
+        Affichage d'information sur le success de condamnation.
+        @param: {String} param - le numéro de détenu
+    */
+    this.infoCondamnationSuccess = function (param) {
+        param = (param === null) ? " " : param;
+        console.log(prefixInfo, "[INFO] ==> Détenu " + param + " a été bien condamné.");
+    }
+
+    /*
+        Affichage d'information sur la creation d'une nouvelle condamnation.
+        @param: {String} param - le numéro de détenu
+    */
+    this.infoCreateCondamnation = function (param) {
+        param = (param === null) ? " " : param;
+        console.log(prefixInfo, "[INFO] ==> Condamnation du détenu " + param + "...");
+    }
+
+    /*
         Affichage d'information sur la création d'une nouvelle liberation.
         @param: {String} param - le numéro du détenu
     */
@@ -102,4 +120,6 @@ const Logger = function () {
     }
 }
 
-module.exports = Logger;
+const logger = new Logger();
+
+module.exports = logger;

@@ -2,5 +2,7 @@
     La classe Incarceration
  */
 const Incarceration = function (options) {
-    this.date_incarceration = options.date_incarceration;
+    this.$date_incarceration = options.date_incarceration;
 }
+
+module.exports = Incarceration;

@@ -1,10 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var dbConn = require('../lib/db');
-const Logger = require("../public/javascripts/core/logger/logger");
-
-/* Définition de logger */
-let logger = new Logger();
+var logger = require("../public/javascripts/core/logger/logger");
+var common = require("../public/javascripts/core/commons/common");
 
 /* initialiser la page de réduction de peine */
 router.get('/', function (req, res, next) {
@@ -44,7 +42,7 @@ router.post('/', function (req, res, next) {
         return;
     }
 
-    if (!allFieldsAreSet(options)) {
+    if (!common.allFieldsAreSet(options)) {
         req.flash('error', "Veuillez saisir tous les champs.");
         dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function (err, rows) {
             if (err) {
@@ -119,13 +117,5 @@ router.post('/', function (req, res, next) {
     })
     logger.infoLiberationSuccess();
 })
-
-function allFieldsAreSet(fields) {
-    for (let key in fields) {
-        if (fields[key].length === 0)
-            return false;
-    }
-    return true;
-}
 
 module.exports = router;
