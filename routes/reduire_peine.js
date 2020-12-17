@@ -127,6 +127,7 @@ router.get('/delete/(:n_ecrou)(:date_decision)', function (req, res, next) {
         "Reduction_peine.date_decision = '" + date_decision + "') " +
         "WHERE Condamnation.n_ecrou = '" + n_ecrou + "'";
 
+    /* mise à jour de la durée de manière automatique */
     dbConn.all(queryUpdateDuree, function (err, result) {
         if (err) req.flash('error', err);
     });

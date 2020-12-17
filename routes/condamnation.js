@@ -181,6 +181,7 @@ router.post('/update/:n_ecrou', function (req, res, next) {
         "(SELECT sum(Reduction_peine.duree) from Reduction_peine where Reduction_peine.n_ecrou = '" + req.params.n_ecrou + "'), " + req.body.duree + ") " +
         "WHERE Condamnation.n_ecrou = '" + req.params.n_ecrou + "'";
 
+    /* mise à jour de la durée de manière automatique */
     dbConn.all(queryUpdateDuree, function (err, result) {
         if (err) req.flash('error', err);
     });
