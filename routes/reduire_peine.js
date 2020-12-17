@@ -134,8 +134,13 @@ router.get('/delete/(:n_ecrou)(:date_decision)', function (req, res, next) {
 
     logger.infoDelete(" liés à la libération de peine...");
     logger.infoExecQuery();
-    dbConn.all("DELETE FROM Reduction_peine where n_ecrou = '" + n_ecrou + "' AND " +
-        "date_decision = '" + date_decision + "'", function (err) {
+
+    /* besoin de faire splice() car la chaîne est concaténée dans les req.params */
+    var n_ecrou_escaped = n_ecrou.concat(date_decision.slice(0, -10));
+    /* on va extraire la date aussi de req.params vu que le valeur du js est faux */
+    var date_escaped = date_decision.substr(date_decision.indexOf("-") - 4);
+    dbConn.all("DELETE FROM Reduction_peine where n_ecrou = '" + n_ecrou_escaped + "' AND " +
+        "date_decision = '" + date_escaped + "'", function (err) {
         if (err) {
             req.flash('error', err);
         } else {
