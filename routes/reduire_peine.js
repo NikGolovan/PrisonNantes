@@ -29,6 +29,7 @@ router.post('/', function (req, res, next) {
     let n_ecrou = req.body.n_ecrou;
     let date_decision = req.body.date_decision;
     let duree = req.body.duree;
+    let queryUpdateDuree = "UPDATE Condamnation SET duree = duree - " + duree + " WHERE n_ecrou = '" + n_ecrou + "' AND duree > " + duree;
 
     if (n_ecrou.length === 0 || n_type_decision.length === 0 ||
         date_decision.length === 0 || duree.length === 0) {
@@ -83,7 +84,8 @@ router.post('/', function (req, res, next) {
             /* insérer dans la table Reduction_peine  */
             dbConn.all(queryInsert, form_data, function (err, result) {
                 if (err) {
-                    let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
+                    let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ?
+                        "Veuillez saisir une autre date pour detenu " + n_ecrou + " car la réduction de peine pour cette date existe déjà." : err;
                     req.flash('error', erreurMsg);
                     dbConn.all('SELECT * FROM Reduction_peine ORDER BY n_ecrou desc', function (err, rows) {
                         if (err) {
@@ -100,7 +102,9 @@ router.post('/', function (req, res, next) {
                         }
                     });
                 } else {
-                    req.flash('success', 'Une nouvelle reduction de peine a été bien enregistré.');
+                    dbConn.all(queryUpdateDuree, function (err) {if (err) req.flash('error', err); });
+                    req.flash('success',
+                        "Une nouvelle reduction de peine a été bien enregistré. Duration de condamnation du détenu '" + req.body.n_ecrou + "'  a été bien modifié.");
                     res.redirect(req.get('referer'));
                 }
             });
@@ -114,74 +118,18 @@ router.post('/', function (req, res, next) {
     logger.infoReductionPeineSuccess(req.body.n_ecrou);
 });
 
-/* Afficher la page de modification des informations */
-router.get('/edit/(:n_ecrou)(:date_decision)', function (req, res, next) {
-    dbConn.all("SELECT * FROM Reduction_peine WHERE n_ecrou = '" + req.params.n_ecrou + "' AND " +
-        "date_decision = '" + req.params.date_decision + "'", function (err, rows) {
-        if (err) req.flash('error', err);
-        if (rows.length <= 0) {
-            req.flash('error', 'Pas de condamné avec n_ecrou = ' + n_ecrou);
-            res.redirect('pages/reduire');
-        } else {
-            res.render('pages/edit_reduire_peine', rows[0]);
-        }
-    });
-});
-
-/* Mettre à jour les information concernant réduction de peine */
-router.post('/update/:n_ecrou:date_decision', function (req, res, next) {
-    let fields = {
-        n_ecrou: req.params.n_ecrou,
-        date_decision: req.body.date_decision,
-        duree: req.body.duree
-    };
-
-    /* gestion d'annulation de la page */
-    if (req.body.canceled) {
-        res.redirect('/reduire');
-        return;
-    }
-
-    /* vérifier si les champs sont vides */
-    if (!common.allFieldsAreSet(fields)) {
-        req.flash('error', "Veuillez saisir les modifications.");
-        res.render('pages/edit_reduire_peine', {
-            n_type_decision: req.params.n_type_decision,
-            n_ecrou: req.params.n_ecrou,
-            date_decision: req.body.date_decision,
-            duree: req.body.duree
-        });
-    }
-
-    /* données contenant la durée */
-    var form_data = {
-        $duree: req.body.duree
-    };
-
-    logger.infoUpdateQuery(" concernant réduction de peine pour condamné " + req.params.n_ecrou);
-    logger.infoExecQuery();
-    dbConn.run("UPDATE Reduction_peine SET duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'" +
-        " AND date_decision = '" + req.params.date_decision + "'", form_data, function (err, result) {
-        if (err) {
-            req.flash('error', err);
-            res.render('pages/edit_reduire_peine', {
-                date_decision: req.body.date_decision,
-                n_ecrou: req.body.n_ecrou,
-                duree: req.body.duree
-            })
-        } else {
-            req.flash('success', 'Les informations ont été bien mises à jour.');
-            res.redirect('/reduire');
-        }
-    });
-    /* afficher fin d'exécution des requêtes */
-    logger.infoUpdateSuccess();
-});
-
 /* Supprimer decision de réduction de peine */
 router.get('/delete/(:n_ecrou)(:date_decision)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
     let date_decision = req.params.date_decision;
+    let queryUpdateDuree = "UPDATE Condamnation set duree = Condamnation.duree + " +
+        "(SELECT Reduction_peine.duree from Reduction_peine where Reduction_peine.n_ecrou = '" + n_ecrou + "' AND " +
+        "Reduction_peine.date_decision = '" + date_decision + "') " +
+        "WHERE Condamnation.n_ecrou = '" + n_ecrou + "'";
+
+    dbConn.all(queryUpdateDuree, function (err, result) {
+        if (err) req.flash('error', err);
+    });
 
     logger.infoDelete(" liés à la libération de peine...");
     logger.infoExecQuery();
@@ -190,7 +138,8 @@ router.get('/delete/(:n_ecrou)(:date_decision)', function (req, res, next) {
         if (err) {
             req.flash('error', err);
         } else {
-            req.flash('success', 'Réduction de peine a été bien supprimé.');
+            req.flash('success',
+                "Réduction de peine a été bien supprimé. Duration de condamnation du détenu '" + req.params.n_ecrou + "'  a été bien modifié.");
             logger.infoDeleteSuccess();
             res.redirect('/reduire');
         }

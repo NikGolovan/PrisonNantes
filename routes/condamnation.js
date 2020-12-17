@@ -157,14 +157,13 @@ router.post('/update/:n_ecrou', function (req, res, next) {
 
     /* donnés à mettre à jour */
     var form_data = {
-        $date_decision: req.body.date_decision,
         $duree: req.body.duree
     }
 
     logger.infoUpdateQuery(" du condamné " + req.params.n_ecrou);
     logger.infoExecQuery();
     /* exécution de la requête */
-    dbConn.run("UPDATE Condamnation SET date_decision = $date_decision, duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
+    dbConn.run("UPDATE Condamnation SET duree = $duree WHERE n_ecrou = '" + fields["n_ecrou"] + "'", form_data, function (err, result) {
         if (err) {
             req.flash('error', err);
             res.render('pages/edit_condamnation', {
@@ -172,10 +171,18 @@ router.post('/update/:n_ecrou', function (req, res, next) {
                 duree: req.body.duree
             });
         } else {
-            req.flash('success', 'Les informations ont été bien mises à jour.');
+            req.flash('success',
+                'Les informations ont été bien mises à jour. La durée a été mise à jour selon les réductions de peine existantes du détenu.');
             logger.infoUpdateSuccess();
             res.redirect('/condamnation');
         }
+    });
+    let queryUpdateDuree = "UPDATE Condamnation set duree = COALESCE(Condamnation.duree - " +
+        "(SELECT sum(Reduction_peine.duree) from Reduction_peine where Reduction_peine.n_ecrou = '" + req.params.n_ecrou + "'), " + req.body.duree + ") " +
+        "WHERE Condamnation.n_ecrou = '" + req.params.n_ecrou + "'";
+
+    dbConn.all(queryUpdateDuree, function (err, result) {
+        if (err) req.flash('error', err);
     });
     logger.infoUpdateSuccess();
 });
