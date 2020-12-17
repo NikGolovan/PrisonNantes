@@ -122,10 +122,16 @@ router.post('/', function (req, res, next) {
 router.get('/delete/(:n_ecrou)(:date_decision)', function (req, res, next) {
     let n_ecrou = req.params.n_ecrou;
     let date_decision = req.params.date_decision;
+
+    /* besoin de faire splice() car la chaîne est concaténée dans les req.params */
+    var n_ecrou_escaped = n_ecrou.concat(date_decision.slice(0, -10));
+    /* on va extraire la date aussi de req.params vu que le valeur du js est faux */
+    var date_escaped = date_decision.substr(date_decision.indexOf("-") - 4);
+
     let queryUpdateDuree = "UPDATE Condamnation set duree = Condamnation.duree + " +
-        "(SELECT Reduction_peine.duree from Reduction_peine where Reduction_peine.n_ecrou = '" + n_ecrou + "' AND " +
-        "Reduction_peine.date_decision = '" + date_decision + "') " +
-        "WHERE Condamnation.n_ecrou = '" + n_ecrou + "'";
+        "(SELECT Reduction_peine.duree from Reduction_peine where Reduction_peine.n_ecrou = '" + n_ecrou_escaped + "' AND " +
+        "Reduction_peine.date_decision = '" + date_escaped + "') " +
+        "WHERE Condamnation.n_ecrou = '" + n_ecrou_escaped + "'";
 
     /* mise à jour de la durée de manière automatique */
     dbConn.all(queryUpdateDuree, function (err, result) {
@@ -134,11 +140,6 @@ router.get('/delete/(:n_ecrou)(:date_decision)', function (req, res, next) {
 
     logger.infoDelete(" liés à la libération de peine...");
     logger.infoExecQuery();
-
-    /* besoin de faire splice() car la chaîne est concaténée dans les req.params */
-    var n_ecrou_escaped = n_ecrou.concat(date_decision.slice(0, -10));
-    /* on va extraire la date aussi de req.params vu que le valeur du js est faux */
-    var date_escaped = date_decision.substr(date_decision.indexOf("-") - 4);
     dbConn.all("DELETE FROM Reduction_peine where n_ecrou = '" + n_ecrou_escaped + "' AND " +
         "date_decision = '" + date_escaped + "'", function (err) {
         if (err) {
