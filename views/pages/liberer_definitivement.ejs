@@ -37,11 +37,11 @@
                         </div>
                         <div class="form-group">
                             <label>Date de la decision:</label>
-                            <input type="date" class="form-control" name="date_decision" value="<%= date_decision %>" autocomplete="off">
+                            <input type="date" max="9999-12-31" class="form-control" name="date_decision" value="<%= date_decision %>" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label>Date de la liberation:</label>
-                            <input type="date" class="form-control" name="date_liberation" value="<%= date_liberation %>" autocomplete="off">
+                            <input type="date" max="9999-12-31" class="form-control" name="date_liberation" value="<%= date_liberation %>" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-info" value="Liberer"/>
