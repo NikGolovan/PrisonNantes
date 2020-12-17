@@ -125,7 +125,7 @@ router.get('/delete/(:n_ecrou)(:date_decision)', function (req, res, next) {
 
     /* besoin de faire splice() car la chaîne est concaténée dans les req.params */
     var n_ecrou_escaped = n_ecrou.concat(date_decision.slice(0, -10));
-    /* on va extraire la date aussi de req.params vu que le valeur du js est faux */
+    /* on va extraire la date aussi de req.params vu que le valeur dans les params est concaténé */
     var date_escaped = date_decision.substr(date_decision.indexOf("-") - 4);
 
     let queryUpdateDuree = "UPDATE Condamnation set duree = Condamnation.duree + " +
