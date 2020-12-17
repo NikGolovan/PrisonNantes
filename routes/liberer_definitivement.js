@@ -84,13 +84,12 @@ router.post('/', function (req, res, next) {
         if (err) req.flash('error', err);
         if (result.length > 0) {
             dbConn.all(queryInsertDecision, form_data_decision, function (err, result) {
-                if (err) req.flash('error', err);
+                if (err) {
+                    req.flash('error', "Détenu " + n_ecrou + " a été déjà libéré.");
+                }
             })
             dbConn.all(queryInsert, form_data, function (err, result) {
                 if (err) {
-                    let erreurMsg = err.toString().indexOf('UNIQUE CONSTRAINT FAILED') ? "L'incarcéré avec le numéro " + n_ecrou + " déjà existe." : err;
-                    req.flash('error', erreurMsg);
-
                     dbConn.all('SELECT * FROM Liberation_definitive ORDER BY n_ecrou desc', function (err, rows) {
                         if (err) {
                             req.flash('error', err);
